@@ -2,6 +2,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.pnpm-store/
 
 # testing
 /coverage
@@ -16,6 +17,7 @@
 # misc
 .DS_Store
 *.pem
+.env*.local
 
 # debug
 npm-debug.log*
@@ -31,3 +33,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# archivos grandes
+*.node
