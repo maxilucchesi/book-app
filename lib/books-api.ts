@@ -1,5 +1,3 @@
-// Placeholder para futura integración con Google Books API
-
 export interface GoogleBookResult {
   id: string
   volumeInfo: {
