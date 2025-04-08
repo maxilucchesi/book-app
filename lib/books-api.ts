@@ -1,3 +1,5 @@
+// Placeholder para futura integración con Google Books API
+
 export interface GoogleBookResult {
   id: string
   volumeInfo: {
@@ -43,4 +45,3 @@ export async function getBookById(id: string): Promise<GoogleBookResult | null> 
   // Por ahora, devolvemos null
   return null
 }
-

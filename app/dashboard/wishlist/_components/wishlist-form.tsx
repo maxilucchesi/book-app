@@ -157,4 +157,3 @@ export function WishlistForm({ userId, item }: WishlistFormProps) {
     </form>
   )
 }
-

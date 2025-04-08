@@ -29,4 +29,3 @@ export function WishlistCard({ item }: WishlistCardProps) {
     </Card>
   )
 }
-

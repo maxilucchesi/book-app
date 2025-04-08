@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,21 +13,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export function LoginForm() {
   const router = useRouter()
-  const supabase = createClient()
+  const { signIn, signUp } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { error } = await signIn(email, password)
 
     if (error) {
       setError(error.message)
@@ -43,14 +41,9 @@ export function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
+    setSuccessMessage(null)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    const { error } = await signUp(email, password)
 
     if (error) {
       setError(error.message)
@@ -59,8 +52,7 @@ export function LoginForm() {
     }
 
     setIsLoading(false)
-    // Mostrar mensaje de verificación de correo
-    setError("Revisa tu correo para verificar tu cuenta")
+    setSuccessMessage("Revisa tu correo para verificar tu cuenta")
   }
 
   return (
@@ -126,8 +118,13 @@ export function LoginForm() {
             />
           </div>
           {error && (
-            <Alert variant={error.includes("Revisa") ? "default" : "destructive"}>
+            <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {successMessage && (
+            <Alert>
+              <AlertDescription>{successMessage}</AlertDescription>
             </Alert>
           )}
           <Button type="submit" className="w-full" disabled={isLoading}>
@@ -138,4 +135,3 @@ export function LoginForm() {
     </Tabs>
   )
 }
-

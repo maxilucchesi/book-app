@@ -1,20 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { usePathname } from "next/navigation"
+import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 
 export function Header() {
   const pathname = usePathname()
-  const router = useRouter()
-  const supabase = createClient()
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
-  }
+  const { user, signOut } = useAuth()
 
   if (pathname === "/login") return null
 
@@ -42,12 +36,16 @@ export function Header() {
             </Link>
           </nav>
         </div>
-        <Button variant="ghost" size="icon" onClick={handleLogout}>
-          <LogOut className="h-5 w-5" />
-          <span className="sr-only">Cerrar sesión</span>
-        </Button>
+        {user && (
+          <div className="flex items-center gap-4">
+            <span className="text-sm hidden md:inline-block">{user.email}</span>
+            <Button variant="ghost" size="icon" onClick={() => signOut()}>
+              <LogOut className="h-5 w-5" />
+              <span className="sr-only">Cerrar sesión</span>
+            </Button>
+          </div>
+        )}
       </div>
     </header>
   )
 }
-

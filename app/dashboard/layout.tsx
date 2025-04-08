@@ -1,22 +1,14 @@
 import type React from "react"
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
 import { Header } from "@/components/header"
+import { requireAuth } from "@/lib/auth"
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const supabase = createClient()
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    redirect("/login")
-  }
+  // Verificar autenticación
+  await requireAuth()
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -25,4 +17,3 @@ export default async function DashboardLayout({
     </div>
   )
 }
-

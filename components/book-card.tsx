@@ -39,4 +39,3 @@ export function BookCard({ book }: BookCardProps) {
     </Card>
   )
 }
-

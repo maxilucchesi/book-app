@@ -64,4 +64,3 @@ CREATE POLICY "Usuarios pueden eliminar sus propios items de wishlist"
 -- Índices para mejorar el rendimiento
 CREATE INDEX books_user_id_idx ON books(user_id);
 CREATE INDEX wishlist_user_id_idx ON wishlist(user_id);
-

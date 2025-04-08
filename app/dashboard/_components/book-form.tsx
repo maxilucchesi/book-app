@@ -170,4 +170,3 @@ export function BookForm({ userId, book }: BookFormProps) {
     </form>
   )
 }
-

@@ -26,4 +26,3 @@ export function StarRating({ rating, max = 5, onChange }: StarRatingProps) {
     </div>
   )
 }
-

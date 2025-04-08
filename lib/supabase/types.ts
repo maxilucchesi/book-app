@@ -84,4 +84,3 @@ export type UpdateBook = Database["public"]["Tables"]["books"]["Update"]
 export type WishlistItem = Database["public"]["Tables"]["wishlist"]["Row"]
 export type NewWishlistItem = Database["public"]["Tables"]["wishlist"]["Insert"]
 export type UpdateWishlistItem = Database["public"]["Tables"]["wishlist"]["Update"]
-

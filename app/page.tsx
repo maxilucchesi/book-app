@@ -1,12 +1,25 @@
 import Link from "next/link"
-import { AuthStatus } from "@/components/auth-client"
+import { getUser } from "@/lib/auth"
 
-export default function Home() {
+export default async function Home() {
+  const user = await getUser()
+
   return (
     <div className="container min-h-screen flex flex-col justify-center items-center p-4">
       <header className="w-full py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Mi Biblioteca</h1>
-        <AuthStatus />
+        {user ? (
+          <Link
+            href="/dashboard"
+            className="inline-block bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
+          >
+            Mi Dashboard
+          </Link>
+        ) : (
+          <Link href="/login" className="inline-block bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90">
+            Iniciar sesión
+          </Link>
+        )}
       </header>
 
       <main className="flex-1 flex flex-col justify-center items-center py-20">
@@ -17,17 +30,29 @@ export default function Home() {
         <div className="grid gap-6 mt-12">
           <div className="border rounded-lg p-6 text-left">
             <h3 className="text-xl font-semibold mb-4">Gestiona tus libros</h3>
-            <p className="mb-4">Inicia sesión para acceder a tu biblioteca personal y lista de deseos.</p>
-            <Link
-              href="/dashboard"
-              className="inline-block bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
-            >
-              Ir al Dashboard
-            </Link>
+            <p className="mb-4">
+              {user
+                ? "Accede a tu biblioteca personal y lista de deseos."
+                : "Inicia sesión para acceder a tu biblioteca personal y lista de deseos."}
+            </p>
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="inline-block bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
+              >
+                Ir a mi biblioteca
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-block bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
+              >
+                Iniciar sesión
+              </Link>
+            )}
           </div>
         </div>
       </main>
     </div>
   )
 }
-
