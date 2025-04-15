@@ -29,8 +29,8 @@ export function BookCard({ book, type, showActions = false }: BookCardProps) {
       >
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-[16px] font-semibold text-[#222222] leading-snug tracking-tight mb-1">{book.title}</h3>
-            <p className="text-[16px] font-light text-[#888888] leading-snug mb-2">{book.author}</p>
+            <h3 className="font-serif text-lg font-medium text-[#222222]">{book.title}</h3>
+            <p className="text-sm text-[#888888]">{book.author}</p>
 
             {type === "read" && book.rating && (
               <div className="mt-2 flex">

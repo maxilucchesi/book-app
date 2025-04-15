@@ -1,15 +1,10 @@
 import type React from "react"
 import "@/app/globals.css"
-import { Instrument_Serif } from "next/font/google"
+import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
 
-// Mantenemos solo Instrument Serif para los títulos
-const instrumentSerif = Instrument_Serif({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-})
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata = {
   title: "Mis Lecturas",
@@ -52,18 +47,21 @@ export default function RootLayout({
         <meta name="msapplication-TileImage" content="/apple-icon.png" />
         <style>
           {`
-            .font-serif {
-              font-family: ${instrumentSerif.style.fontFamily}, Georgia, serif;
-              letter-spacing: -0.025em;
+            @font-face {
+              font-family: 'Louize';
+              src: url('/fonts/Louize-Regular.woff2') format('woff2');
+              font-weight: normal;
+              font-style: normal;
+              font-display: swap;
             }
             
-            body {
-              font-family: Helvetica, Arial, sans-serif;
+            .font-serif {
+              font-family: 'Louize', Georgia, serif;
             }
           `}
         </style>
       </head>
-      <body className="font-sans">
+      <body className={`${inter.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />

@@ -60,7 +60,7 @@ const config = {
         sm: "calc(var(--radius) - 0.5rem)",
       },
       fontFamily: {
-        sans: ["Helvetica", "Arial", "sans-serif"],
+        sans: ["var(--font-sans)"],
       },
       keyframes: {
         "accordion-down": {

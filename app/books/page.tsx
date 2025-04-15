@@ -30,7 +30,7 @@ export default async function BooksPage({
           <Link href="/dashboard" className="mr-4">
             <ArrowLeft className="h-5 w-5 text-[#888888]" />
           </Link>
-          <h1 className="text-3xl font-serif tracking-tight leading-tight text-[#222222]">Your Books</h1>
+          <h1 className="font-serif text-2xl font-normal text-[#222222]">Your Books</h1>
         </header>
 
         <BookFilter currentFilter={filter} />

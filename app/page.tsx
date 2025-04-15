@@ -92,9 +92,7 @@ export default function LoginPage() {
               className="animate-bounce-slow"
             />
           </div>
-          <h1 className="font-serif text-6xl font-normal text-[#222222]" style={{ fontSize: "64px" }}>
-            Hola Giuli :)
-          </h1>
+          <h1 className="font-serif text-4xl font-normal text-[#222222]">Hola Giuli :)</h1>
           <p className="mt-3 text-sm text-[#888888]">Tu viaje de lectura te espera</p>
         </div>
 

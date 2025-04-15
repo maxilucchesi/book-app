@@ -90,13 +90,8 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-md">
         <header className="mb-8 flex items-center justify-between">
           <div>
-            <h1
-              className="font-serif text-6xl font-normal text-[#222222] tracking-tight leading-tight"
-              style={{ fontSize: "64px" }}
-            >
-              Mis Lecturas
-            </h1>
-            <p className="mt-1 text-base leading-6 text-[#888888]">{randomPhrase}</p>
+            <h1 className="font-serif text-2xl font-normal text-[#222222]">Mis Lecturas</h1>
+            <p className="mt-1 text-sm text-[#888888]">{randomPhrase}</p>
           </div>
           <div className="flex items-center">
             <Button
@@ -116,10 +111,10 @@ export default function DashboardPage() {
         {/* Componente de estado de sincronización */}
         <SyncStatus />
 
-        <section className="mb-10">
+        <section className="mb-8">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-serif text-3xl font-semibold text-[#222222] tracking-tight leading-snug">Leídos</h2>
-            <Link href="/books?filter=read" className="text-sm font-semibold text-[#666666] hover:text-[#FFA69E]">
+            <h2 className="font-serif text-xl text-[#222222]">Leídos recientemente</h2>
+            <Link href="/books?filter=read" className="text-sm text-[#888888] hover:text-[#FFA69E]">
               Ver todos
             </Link>
           </div>
@@ -144,10 +139,10 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="mb-10">
+        <section className="mb-8">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-serif text-3xl font-semibold text-[#222222] tracking-tight leading-snug">Wishlist</h2>
-            <Link href="/books?filter=wishlist" className="text-sm font-semibold text-[#666666] hover:text-[#FFA69E]">
+            <h2 className="font-serif text-xl text-[#222222]">Lista de deseos</h2>
+            <Link href="/books?filter=wishlist" className="text-sm text-[#888888] hover:text-[#FFA69E]">
               Ver todos
             </Link>
           </div>

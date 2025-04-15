@@ -50,9 +50,7 @@ export function BookDetailDialog({ book, type, children }: BookDetailDialogProps
       <DialogContent className="sm:max-w-md rounded-xl">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-[18px] font-semibold text-[#222222] leading-snug tracking-tight mb-1">
-              {book.title}
-            </DialogTitle>
+            <DialogTitle className="font-serif text-2xl text-[#222222]">{book.title}</DialogTitle>
             {book.pending_sync && (
               <div className="flex items-center text-amber-500 text-xs">
                 <CloudOff className="h-3 w-3 mr-1" />
@@ -60,9 +58,7 @@ export function BookDetailDialog({ book, type, children }: BookDetailDialogProps
               </div>
             )}
           </div>
-          <DialogDescription className="text-[18px] font-light text-[#888888] leading-snug">
-            {book.author}
-          </DialogDescription>
+          <DialogDescription className="text-[#888888]">{book.author}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
