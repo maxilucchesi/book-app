@@ -88,12 +88,29 @@ export async function getCurrentUser() {
 // Obtener la sesión actual (seguro para server components)
 export async function getCurrentSession() {
   try {
+    // Intentar usar el cliente del servidor si estamos en un Server Component
+    if (typeof window === "undefined") {
+      // Importación dinámica para evitar errores en el cliente
+      const { createServerComponentClient } = await import("@supabase/auth-helpers-nextjs")
+      const { cookies } = await import("next/headers")
+
+      const supabase = createServerComponentClient({ cookies })
+      const { data, error } = await supabase.auth.getSession()
+
+      if (error) {
+        console.error("Error al obtener sesión en el servidor:", error)
+        return null
+      }
+
+      return data.session
+    }
+
     // Si estamos en el cliente, usar el cliente normal
     const supabase = createClient()
     const { data, error } = await supabase.auth.getSession()
 
     if (error) {
-      console.error("Error al obtener sesión:", error)
+      console.error("Error al obtener sesión en el cliente:", error)
       return null
     }
 

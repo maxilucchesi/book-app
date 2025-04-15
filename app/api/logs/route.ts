@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
-import type { Database } from "@/lib/database.types"
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
 
     // Obtener cliente de Supabase
     const cookieStore = cookies()
-    const supabase = createRouteHandlerClient<Database>({ cookies: () => cookieStore })
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
     // Verificar sesión (opcional, podríamos permitir logs anónimos)
     const { data: sessionData } = await supabase.auth.getSession()
