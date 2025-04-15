@@ -1,6 +1,6 @@
 import type React from "react"
 import "@/app/globals.css"
-import { Instrument_Serif } from "next/font/google"
+import { Instrument_Serif } from 'next/font/google'
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
 
