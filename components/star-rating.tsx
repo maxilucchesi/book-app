@@ -4,23 +4,19 @@ import { Star } from "lucide-react"
 
 interface StarRatingProps {
   rating: number
-  max?: number
-  onChange?: (rating: number) => void
+  setRating: (rating: number) => void
 }
 
-export function StarRating({ rating, max = 5, onChange }: StarRatingProps) {
-  const stars = Array.from({ length: max }, (_, i) => i + 1)
-
+export function StarRating({ rating, setRating }: StarRatingProps) {
   return (
     <div className="flex">
-      {stars.map((star) => (
-        <button
-          key={star}
-          type="button"
-          onClick={() => onChange?.(star)}
-          className={`${onChange ? "cursor-pointer" : "cursor-default"}`}
-        >
-          <Star className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button key={star} type="button" onClick={() => setRating(star)} className="p-1 focus:outline-none">
+          <Star
+            className={`h-6 w-6 ${
+              star <= rating ? "fill-[#FFA69E] text-[#FFA69E]" : "text-[#CCCCCC]"
+            } transition-colors duration-200`}
+          />
         </button>
       ))}
     </div>

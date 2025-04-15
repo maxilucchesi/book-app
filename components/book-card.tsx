@@ -1,41 +1,82 @@
+"use client"
+
 import Link from "next/link"
-import type { Book } from "@/lib/supabase/types"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { StarRating } from "@/components/star-rating"
+import { Button } from "@/components/ui/button"
+import { Edit2, Heart, CloudOff } from "lucide-react"
+import { BookDetailDialog } from "@/components/book-detail-dialog"
 
 interface BookCardProps {
-  book: Book
+  book: {
+    id?: string
+    local_id?: string
+    title: string
+    author: string
+    rating?: number | null
+    date_finished?: string
+    review?: string
+    type: "read" | "wishlist"
+    pending_sync?: boolean
+  }
+  type: "read" | "wishlist"
+  showActions?: boolean
 }
 
-export function BookCard({ book }: BookCardProps) {
-  const statusMap = {
-    por_empezar: { label: "Por empezar", color: "bg-blue-100 text-blue-800" },
-    leyendo: { label: "Leyendo", color: "bg-yellow-100 text-yellow-800" },
-    terminado: { label: "Terminado", color: "bg-green-100 text-green-800" },
-    abandonado: { label: "Abandonado", color: "bg-red-100 text-red-800" },
-  }
-
-  const status = statusMap[book.status]
-
+export function BookCard({ book, type, showActions = false }: BookCardProps) {
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{book.title}</CardTitle>
-          <Badge className={status.color}>{status.label}</Badge>
+    <BookDetailDialog book={book} type={type}>
+      <div
+        className={`rounded-xl ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} p-4 shadow-sm cursor-pointer hover:shadow-md transition-all duration-200`}
+      >
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="text-[16px] font-semibold text-[#222222] leading-snug tracking-tight mb-1">{book.title}</h3>
+            <p className="text-[16px] font-light text-[#888888] leading-snug mb-2">{book.author}</p>
+
+            {type === "read" && book.rating && (
+              <div className="mt-2 flex">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className="text-sm">
+                    {i < book.rating ? "⭐" : "☆"}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {type === "wishlist" && (
+              <div className="mt-2 flex items-center text-sm text-[#888888]">
+                <span className="mr-1">✨</span> En tu lista de deseos
+              </div>
+            )}
+          </div>
+
+          {book.rating === 5 && (
+            <div className="ml-2 text-[#FFA69E]">
+              <Heart className="h-5 w-5 fill-[#FFA69E]" />
+            </div>
+          )}
+
+          {book.pending_sync && (
+            <div className="ml-2 text-amber-500">
+              <CloudOff className="h-4 w-4" />
+            </div>
+          )}
         </div>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm text-muted-foreground mb-2">por {book.author}</p>
-        {book.review && <p className="text-sm mt-2">{book.review}</p>}
-      </CardContent>
-      <CardFooter className="flex justify-between pt-2 border-t">
-        <div>{book.rating && <StarRating rating={book.rating} />}</div>
-        <Link href={`/dashboard/edit/${book.id}`} className="text-xs text-primary hover:underline">
-          Editar
-        </Link>
-      </CardFooter>
-    </Card>
+
+        {showActions && (
+          <div className="mt-3 flex justify-end">
+            <Link href={`/edit-book/${book.id || book.local_id}`} onClick={(e) => e.stopPropagation()}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 rounded-full text-[#888888] hover:bg-[#F5F5F5] hover:text-[#222222]"
+              >
+                <Edit2 className="mr-1 h-3 w-3" />
+                Editar
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+    </BookDetailDialog>
   )
 }
