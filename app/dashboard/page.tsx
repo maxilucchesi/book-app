@@ -20,6 +20,11 @@ export default function DashboardPage() {
   const [randomPhrase, setRandomPhrase] = useState("")
   const [isButtonHovered, setIsButtonHovered] = useState(false)
 
+  // Add the date check for International Book Day near the top of the component
+  // Add this after the useState declarations
+  const today = new Date()
+  const isBookDay = today.getMonth() === 3 && today.getDate() === 23
+
   // Cargar datos
   const loadData = async () => {
     try {
@@ -107,6 +112,14 @@ export default function DashboardPage() {
             <UserNav />
           </div>
         </header>
+        {isBookDay && (
+          <div className="mb-6 p-3 bg-[#FFF0EE] rounded-lg border border-[#FFA69E] text-center">
+            <p className="text-[#222222] font-medium">✨📚 ¡Feliz Día Internacional del Libro! 📚✨</p>
+            <p className="text-sm text-[#888888] mt-1">
+              Hoy los libros están de fiesta, ¿cuál invitarás a tu estantería?
+            </p>
+          </div>
+        )}
 
         {/* Componente de estado de sincronización */}
         <SyncStatus />

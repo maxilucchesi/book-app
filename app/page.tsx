@@ -14,6 +14,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Check if today is International Book Day (April 23)
+  const today = new Date()
+  const isBookDay = today.getMonth() === 3 && today.getDate() === 23
+
   // Añadir metaetiquetas directamente al DOM para asegurar que Safari las lea
   useEffect(() => {
     // Verificar si ya existen las metaetiquetas para no duplicarlas
@@ -94,6 +98,16 @@ export default function LoginPage() {
           </div>
           <h1 className="font-serif text-4xl font-normal text-[#222222]">Hola Giuli :)</h1>
           <p className="mt-3 text-sm text-[#888888]">Tu viaje de lectura te espera</p>
+
+          {/* International Book Day Message */}
+          {isBookDay && (
+            <div className="mt-4 p-3 bg-[#FFF0EE] rounded-lg border border-[#FFA69E] text-center animate-pulse">
+              <p className="text-[#222222] font-medium">✨📚 ¡Feliz Día Internacional del Libro! 📚✨</p>
+              <p className="text-sm text-[#888888] mt-1">
+                Hoy los libros están de fiesta, ¿cuál invitarás a tu estantería?
+              </p>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleLogin} className="mt-10 space-y-6">
