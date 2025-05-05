@@ -17,7 +17,7 @@ export default async function FavoritesPage() {
           <Link href="/dashboard" className="mr-4">
             <ArrowLeft className="h-5 w-5 text-[#888888]" />
           </Link>
-          <h1 className="font-serif text-2xl font-normal text-[#222222]">Your Top Reads of the Year 💫</h1>
+          <h1 className="font-serif text-2xl font-normal text-[#222222]">Tus Mejores Lecturas del Año 💫</h1>
         </header>
 
         {favoriteBooks.length > 0 ? (
@@ -49,17 +49,17 @@ export default async function FavoritesPage() {
           </div>
         ) : (
           <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-            <p className="text-[#888888]">You don't have any favorite books yet</p>
-            <p className="mt-2 text-sm text-[#888888]">Rate a book with 5 stars to see it here</p>
+            <p className="text-[#888888]">Aún no tienes libros favoritos</p>
+            <p className="mt-2 text-sm text-[#888888]">Califica un libro con 5 estrellas para verlo aquí</p>
             <Link href="/add-book" className="mt-4 inline-block text-sm text-[#FFA69E] hover:underline">
-              Add a new book
+              Añadir un nuevo libro
             </Link>
           </div>
         )}
 
         {favoriteBooks.length > 0 && (
           <div className="mt-8 text-center">
-            <p className="text-sm text-[#888888]">These are the books that touched your heart this year</p>
+            <p className="text-sm text-[#888888]">Estos son los libros que tocaron tu corazón este año</p>
             <div className="mt-4 text-2xl">✨📚💖</div>
           </div>
         )}
