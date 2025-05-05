@@ -72,9 +72,23 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
 
         <div className="space-y-4 py-4">
           {/* Portada del libro si está disponible */}
-          {book.thumbnail && (
+          {book.thumbnail ? (
             <div className="flex justify-center mb-4">
-              <img src={book.thumbnail || "/placeholder.svg"} alt={book.title} className="h-40 rounded-md shadow-md" />
+              <img
+                src={book.thumbnail || "/placeholder.svg"}
+                alt={book.title}
+                className="h-52 rounded-md shadow-md object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/abstract-book-cover.png"
+                  e.currentTarget.className = "h-52 w-32 rounded-md shadow-md object-cover bg-gray-100"
+                }}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center mb-4">
+              <div className="h-52 w-32 rounded-md shadow-md bg-gray-100 flex items-center justify-center">
+                <span className="text-4xl">📚</span>
+              </div>
             </div>
           )}
 
@@ -151,7 +165,7 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
 
           {/* Categorías */}
           {book.categories && book.categories.length > 0 && (
-            <div className="mt-2">
+            <div className="mt-4 border-t pt-4">
               <h4 className="text-sm font-medium text-[#222222] mb-2">Categorías</h4>
               <div className="flex flex-wrap gap-1">
                 {book.categories.map((category, index) => (
@@ -167,26 +181,28 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
           {book.description && (
             <div className="mt-4 border-t pt-4">
               <h4 className="text-sm font-medium text-[#222222] mb-2">Sinopsis</h4>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                 {showFullDescription ? (
                   <>
-                    <p>{book.description}</p>
+                    <p className="whitespace-pre-line">{book.description}</p>
                     <button
                       onClick={() => setShowFullDescription(false)}
-                      className="mt-2 text-xs text-blue-500 hover:underline"
+                      className="mt-2 text-xs text-[#FFA69E] hover:underline flex items-center"
                     >
-                      Mostrar menos
+                      <span>Mostrar menos</span>
                     </button>
                   </>
                 ) : (
                   <>
-                    <p className="line-clamp-3">{book.description}</p>
-                    <button
-                      onClick={() => setShowFullDescription(true)}
-                      className="mt-2 text-xs text-blue-500 hover:underline"
-                    >
-                      Leer más
-                    </button>
+                    <p className="line-clamp-4 whitespace-pre-line">{book.description}</p>
+                    {book.description.length > 200 && (
+                      <button
+                        onClick={() => setShowFullDescription(true)}
+                        className="mt-2 text-xs text-[#FFA69E] hover:underline flex items-center"
+                      >
+                        <span>Leer más</span>
+                      </button>
+                    )}
                   </>
                 )}
               </div>

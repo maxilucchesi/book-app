@@ -12,11 +12,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, Heart } from "lucide-react"
+import { LogOut, Heart, Settings } from "lucide-react"
 import { logout } from "@/lib/simple-auth"
 import { toast } from "@/components/ui/use-toast"
+import { ViewModeToggle } from "@/components/view-mode-toggle"
 
-export function UserNav() {
+interface UserNavProps {
+  viewMode?: "list" | "gallery"
+  onViewModeChange?: (mode: "list" | "gallery") => void
+}
+
+export function UserNav({ viewMode, onViewModeChange }: UserNavProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -39,6 +45,8 @@ export function UserNav() {
 
   return (
     <div className="flex items-center gap-2">
+      {viewMode && onViewModeChange && <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />}
+
       {/* Favorites Button */}
       <Link href="/favorites">
         <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-gray-300">
@@ -61,6 +69,12 @@ export function UserNav() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <Link href="/admin">
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Administración</span>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem
             className="cursor-pointer text-red-500 focus:text-red-500"
             disabled={isLoading}
