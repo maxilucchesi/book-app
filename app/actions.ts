@@ -1,3 +1,5 @@
+"use server"
+
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase"
 import { getUserId } from "@/lib/simple-auth"
@@ -5,7 +7,9 @@ import { testSupabaseConnection, checkUserId } from "@/lib/supabase-debug"
 
 async function revalidateBookPages() {
   revalidatePath("/")
-  revalidatePath("/my-books")
+  revalidatePath("/dashboard")
+  revalidatePath("/books")
+  revalidatePath("/favorites")
 }
 
 // Modificar la función createBookAction para incluir los nuevos campos
@@ -201,30 +205,6 @@ export async function updateBookAction(bookId: string, bookData: any) {
 
     console.log("Datos sanitizados para actualización:", JSON.stringify(sanitizedBook, null, 2))
 
-    // Actualizar en localStorage (modo offline-first)
-    if (typeof window !== "undefined") {
-      try {
-        const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
-        const index = books.findIndex((b: any) => b.id === bookId || b.local_id === bookId)
-
-        if (index >= 0) {
-          // Marcar como pendiente de sincronización
-          books[index] = {
-            ...books[index],
-            ...sanitizedBook,
-            pending_sync: true,
-          }
-          localStorage.setItem("giuli-books", JSON.stringify(books))
-          console.log("Libro actualizado en localStorage:", books[index])
-
-          // Disparar evento de actualización
-          window.dispatchEvent(new CustomEvent("booksUpdated", { detail: books }))
-        }
-      } catch (error) {
-        console.error("Error al actualizar en localStorage:", error)
-      }
-    }
-
     // Intentar actualizar en Supabase
     let supabaseSuccess = false
     try {
@@ -245,22 +225,6 @@ export async function updateBookAction(bookId: string, bookData: any) {
       } else {
         console.log("Libro actualizado con éxito en Supabase:", data)
         supabaseSuccess = true
-
-        // Si la actualización en Supabase fue exitosa, actualizar el localStorage para marcar como sincronizado
-        if (typeof window !== "undefined") {
-          try {
-            const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
-            const index = books.findIndex((b: any) => b.id === bookId)
-
-            if (index >= 0) {
-              books[index] = { ...books[index], ...sanitizedBook, pending_sync: false }
-              localStorage.setItem("giuli-books", JSON.stringify(books))
-              console.log("Libro actualizado en localStorage como sincronizado:", books[index])
-            }
-          } catch (error) {
-            console.error("Error al actualizar estado de sincronización en localStorage:", error)
-          }
-        }
       }
     } catch (supabaseError) {
       console.error("Error al conectar con Supabase para actualización:", supabaseError)
@@ -277,6 +241,28 @@ export async function updateBookAction(bookId: string, bookData: any) {
       message: supabaseSuccess
         ? "Libro actualizado en Supabase y localmente"
         : "Libro actualizado localmente, pendiente de sincronización",
+      // Incluir código para actualizar localStorage en el cliente
+      clientSideCode: `
+        try {
+          const books = JSON.parse(localStorage.getItem("giuli-books") || "[]");
+          const index = books.findIndex(b => b.id === "${bookId}" || b.local_id === "${bookId}");
+          
+          if (index >= 0) {
+            books[index] = {
+              ...books[index],
+              ...${JSON.stringify(sanitizedBook)},
+              pending_sync: ${!supabaseSuccess}
+            };
+            localStorage.setItem("giuli-books", JSON.stringify(books));
+            console.log("Libro actualizado en localStorage:", books[index]);
+            
+            // Disparar evento de actualización
+            window.dispatchEvent(new CustomEvent("booksUpdated", { detail: books }));
+          }
+        } catch (error) {
+          console.error("Error al actualizar en localStorage:", error);
+        }
+      `,
     }
   } catch (error) {
     console.error("Error en updateBookAction:", error)
@@ -292,25 +278,6 @@ export async function deleteBookAction(bookId: string) {
     // Obtener el ID de usuario
     const userId = getUserId()
     console.log("ID de usuario para eliminar libro:", userId)
-
-    // Eliminar de localStorage (modo offline-first)
-    if (typeof window !== "undefined") {
-      try {
-        const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
-        const filteredBooks = books.filter((b: any) => b.id !== bookId && b.local_id !== bookId)
-        localStorage.setItem("giuli-books", JSON.stringify(filteredBooks))
-        console.log("Libro eliminado de localStorage, quedan:", filteredBooks.length)
-
-        // Disparar evento de actualización
-        window.dispatchEvent(
-          new CustomEvent("booksUpdated", {
-            detail: { action: "delete", id: bookId },
-          }),
-        )
-      } catch (error) {
-        console.error("Error al eliminar de localStorage:", error)
-      }
-    }
 
     // Intentar eliminar de Supabase
     let supabaseSuccess = false
@@ -341,14 +308,28 @@ export async function deleteBookAction(bookId: string) {
       success: true,
       supabaseSuccess,
       message: supabaseSuccess ? "Libro eliminado de Supabase y localmente" : "Libro eliminado localmente",
+      // Incluir código para eliminar del localStorage en el cliente
+      clientSideCode: `
+        try {
+          const books = JSON.parse(localStorage.getItem("giuli-books") || "[]");
+          const filteredBooks = books.filter(b => b.id !== "${bookId}" && b.local_id !== "${bookId}");
+          localStorage.setItem("giuli-books", JSON.stringify(filteredBooks));
+          console.log("Libro eliminado de localStorage, quedan:", filteredBooks.length);
+          
+          // Disparar evento de actualización
+          window.dispatchEvent(new CustomEvent("booksUpdated", { 
+            detail: { action: "delete", id: "${bookId}" }
+          }));
+        } catch (error) {
+          console.error("Error al eliminar de localStorage:", error);
+        }
+      `,
     }
   } catch (error) {
     console.error("Error en deleteBookAction:", error)
     throw error
   }
 }
-
-// Añadir la función syncPendingBooksAction al final del archivo
 
 // Función para sincronizar libros pendientes
 export async function syncPendingBooksAction() {

@@ -26,7 +26,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import type { Book } from "@/lib/supabase"
-import { getLocalBooks } from "@/lib/local-storage"
 
 interface EditBookFormProps {
   book: Book
@@ -83,6 +82,17 @@ export function EditBookForm({ book }: EditBookFormProps) {
       const result = await updateBookAction(book.id, bookData)
 
       if (result.success) {
+        // Ejecutar el código del cliente para actualizar localStorage
+        if (result.clientSideCode) {
+          try {
+            // Usar eval para ejecutar el código del cliente
+            // eslint-disable-next-line no-eval
+            eval(result.clientSideCode)
+          } catch (error) {
+            console.error("Error al ejecutar código del cliente:", error)
+          }
+        }
+
         router.push("/dashboard")
         router.refresh()
       } else {
@@ -109,23 +119,22 @@ export function EditBookForm({ book }: EditBookFormProps) {
       const result = await deleteBookAction(book.id)
 
       if (result.success) {
+        // Ejecutar el código del cliente para eliminar de localStorage
+        if (result.clientSideCode) {
+          try {
+            // Usar eval para ejecutar el código del cliente
+            // eslint-disable-next-line no-eval
+            eval(result.clientSideCode)
+          } catch (error) {
+            console.error("Error al ejecutar código del cliente:", error)
+          }
+        }
+
         // Mostrar toast de éxito antes de la redirección
         toast({
           title: "Libro eliminado",
           description: "El libro ha sido eliminado de tu colección.",
         })
-
-        // Forzar una actualización del localStorage
-        if (typeof window !== "undefined") {
-          const localBooks = getLocalBooks()
-          const filteredBooks = localBooks.filter((b) => b.id !== book.id && b.local_id !== book.id)
-          localStorage.setItem("giuli-books", JSON.stringify(filteredBooks))
-
-          // Disparar evento de actualización
-          if (typeof window.dispatchEvent === "function") {
-            window.dispatchEvent(new CustomEvent("booksUpdated", { detail: { action: "delete", id: book.id } }))
-          }
-        }
 
         // Redirigir al dashboard con un parámetro para forzar actualización
         router.push(`/dashboard?refresh=${Date.now()}`)

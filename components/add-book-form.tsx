@@ -92,18 +92,9 @@ export function AddBookForm() {
         // Ejecutar el código del cliente para guardar en localStorage
         if (result.clientSideCode) {
           try {
-            // Guardar directamente en localStorage desde el cliente
-            const localBook = {
-              ...result.book,
-              pending_sync: true,
-            }
-            const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
-            books.push(localBook)
-            localStorage.setItem("giuli-books", JSON.stringify(books))
-            console.log("Libro guardado en localStorage desde el cliente:", localBook)
-
-            // Disparar evento de actualización
-            window.dispatchEvent(new CustomEvent("booksUpdated", { detail: books }))
+            // Usar eval para ejecutar el código del cliente
+            // eslint-disable-next-line no-eval
+            eval(result.clientSideCode)
           } catch (localStorageError) {
             console.error("Error al guardar en localStorage desde el cliente:", localStorageError)
           }
