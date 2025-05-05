@@ -96,7 +96,7 @@ export function BookDetailDialog({ book, type, children }: BookDetailDialogProps
 
           {type === "wishlist" && (
             <div className="flex items-center">
-              <span className="text-sm text-[#888888]">✨ En tu lista de deseos</span>
+              <span className="text-sm text-[#888888]">✨ En tu wishlist</span>
             </div>
           )}
         </div>

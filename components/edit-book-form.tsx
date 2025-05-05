@@ -182,7 +182,7 @@ export function EditBookForm({ book }: EditBookFormProps) {
                 htmlFor="wishlist"
                 className="flex cursor-pointer justify-center rounded-full py-2 text-center text-sm peer-data-[state=checked]:bg-[#D0E2FF] peer-data-[state=checked]:text-[#222222] text-[#888888] transition-all duration-200"
               >
-                Deseo leer
+                Wishlist
               </Label>
             </div>
           </RadioGroup>

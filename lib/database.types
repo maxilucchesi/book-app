@@ -14,6 +14,15 @@ export interface Database {
           date_finished: string | null
           review: string | null
           user_id: string
+          local_id?: string | null
+          // Nuevos campos de metadata
+          published_date?: string | null
+          description?: string | null
+          categories?: string[] | null
+          thumbnail?: string | null
+          page_count?: number | null
+          publisher?: string | null
+          isbn?: string | null
         }
         Insert: {
           id?: string
@@ -25,6 +34,15 @@ export interface Database {
           date_finished?: string | null
           review?: string | null
           user_id: string
+          local_id?: string | null
+          // Nuevos campos de metadata
+          published_date?: string | null
+          description?: string | null
+          categories?: string[] | null
+          thumbnail?: string | null
+          page_count?: number | null
+          publisher?: string | null
+          isbn?: string | null
         }
         Update: {
           id?: string
@@ -36,6 +54,15 @@ export interface Database {
           date_finished?: string | null
           review?: string | null
           user_id?: string
+          local_id?: string | null
+          // Nuevos campos de metadata
+          published_date?: string | null
+          description?: string | null
+          categories?: string[] | null
+          thumbnail?: string | null
+          page_count?: number | null
+          publisher?: string | null
+          isbn?: string | null
         }
       }
     }

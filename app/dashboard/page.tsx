@@ -146,7 +146,7 @@ export default function DashboardPage() {
 
           <section className="mb-8">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl text-[#222222]">Lista de deseos</h2>
+              <h2 className="font-serif text-xl text-[#222222]">Wishlist</h2>
               <Link href="/books?filter=wishlist" className="text-sm text-[#888888] hover:text-[#FFA69E]">
                 Ver todos
               </Link>
@@ -163,19 +163,19 @@ export default function DashboardPage() {
                   .map((book) => <BookCard key={book.id || book.local_id || Date.now()} book={book} type="wishlist" />)
               ) : (
                 <div className="rounded-xl bg-[#F5F5F5] p-4 text-center shadow-sm">
-                  <p className="text-[#888888]">Tu lista de deseos está vacía</p>
+                  <p className="text-[#888888]">Tu wishlist está vacía</p>
                   <Link
                     href="/add-book?type=wishlist"
                     className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline"
                   >
-                    Añade libros a tu lista de deseos
+                    Añade libros a tu wishlist
                   </Link>
                 </div>
               )}
             </div>
           </section>
 
-          <Link href="/add-book">
+          <Link href="/add-book-with-search">
             <div
               className="fixed bottom-6 right-6 group"
               onMouseEnter={() => setIsButtonHovered(true)}
@@ -197,7 +197,7 @@ export default function DashboardPage() {
               </Button>
               {isButtonHovered && (
                 <span className="absolute -top-10 right-0 bg-white px-3 py-1 rounded-full text-sm shadow-md animate-fade-in">
-                  Añadir libro
+                  Añadir libro con búsqueda
                 </span>
               )}
             </div>

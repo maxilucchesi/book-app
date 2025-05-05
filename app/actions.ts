@@ -1,24 +1,14 @@
-"use server"
-
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase"
 import { getUserId } from "@/lib/simple-auth"
-import { getLocalBooks, syncLocalBooks } from "@/lib/local-storage"
 import { testSupabaseConnection, checkUserId } from "@/lib/supabase-debug"
 
-// Función para revalidar todas las rutas relacionadas con libros
-export async function revalidateBookPages() {
-  try {
-    revalidatePath("/dashboard")
-    revalidatePath("/books")
-    revalidatePath("/favorites")
-    console.log("Rutas revalidadas con éxito")
-  } catch (error) {
-    console.error("Error al revalidar rutas:", error)
-  }
+async function revalidateBookPages() {
+  revalidatePath("/")
+  revalidatePath("/my-books")
 }
 
-// Mejorar la función createBookAction para asegurar que el libro se guarde correctamente
+// Modificar la función createBookAction para incluir los nuevos campos
 export async function createBookAction(book: any) {
   console.log("Iniciando createBookAction con datos:", JSON.stringify(book, null, 2))
 
@@ -60,6 +50,14 @@ export async function createBookAction(book: any) {
       local_id: `local-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       pending_sync: true,
       created_at: new Date().toISOString(),
+      // Nuevos campos de metadata
+      published_date: book.published_date || null,
+      description: book.description || null,
+      categories: book.categories || null,
+      thumbnail: book.thumbnail || null,
+      page_count: book.page_count || null,
+      publisher: book.publisher || null,
+      isbn: book.isbn || null,
     }
 
     console.log("Datos sanitizados:", JSON.stringify(sanitizedBook, null, 2))
@@ -103,6 +101,14 @@ export async function createBookAction(book: any) {
             review: sanitizedBook.review,
             user_id: sanitizedBook.user_id,
             local_id: sanitizedBook.local_id,
+            // Nuevos campos de metadata
+            published_date: sanitizedBook.published_date,
+            description: sanitizedBook.description,
+            categories: sanitizedBook.categories,
+            thumbnail: sanitizedBook.thumbnail,
+            page_count: sanitizedBook.page_count,
+            publisher: sanitizedBook.publisher,
+            isbn: sanitizedBook.isbn,
           },
         ])
         .select()
@@ -155,52 +161,67 @@ export async function createBookAction(book: any) {
   }
 }
 
-// Actualizar un libro existente (Server Action)
-export async function updateBookAction(id: string, updates: any) {
-  console.log("Iniciando updateBookAction con datos:", JSON.stringify({ id, updates }, null, 2))
+// Añadir las siguientes funciones después de createBookAction y antes de syncPendingBooksAction
+
+// Función para actualizar un libro existente
+export async function updateBookAction(bookId: string, bookData: any) {
+  console.log("Iniciando updateBookAction con ID:", bookId, "y datos:", JSON.stringify(bookData, null, 2))
 
   try {
     // Validar datos del libro
-    if (updates.title !== undefined && !updates.title.trim()) {
+    if (!bookData.title || !bookData.title.trim()) {
       throw new Error("El título del libro es obligatorio")
     }
 
-    if (updates.author !== undefined && !updates.author.trim()) {
+    if (!bookData.author || !bookData.author.trim()) {
       throw new Error("El autor del libro es obligatorio")
     }
 
-    // Verificar la conexión a Supabase antes de continuar
-    const connectionTest = await testSupabaseConnection()
-    console.log("Resultado de prueba de conexión:", connectionTest)
-
-    if (!connectionTest.success) {
-      console.error("Problema de conexión con Supabase:", connectionTest.error)
-      // Continuamos para guardar en localStorage, pero registramos el error
-    }
+    // Obtener el ID de usuario
+    const userId = getUserId()
+    console.log("ID de usuario para actualizar libro:", userId)
 
     // Sanitizar datos para asegurar que los campos opcionales sean null y no undefined
-    const sanitizedUpdates: any = {}
+    const sanitizedBook = {
+      title: bookData.title.trim(),
+      author: bookData.author.trim(),
+      type: bookData.type,
+      rating: bookData.rating || null,
+      date_finished: bookData.date_finished || null,
+      review: bookData.review ? bookData.review.trim() : null,
+      // Nuevos campos de metadata
+      published_date: bookData.published_date || null,
+      description: bookData.description || null,
+      categories: bookData.categories || null,
+      thumbnail: bookData.thumbnail || null,
+      page_count: bookData.page_count || null,
+      publisher: bookData.publisher || null,
+      isbn: bookData.isbn || null,
+    }
 
-    if (updates.title !== undefined) sanitizedUpdates.title = updates.title.trim()
-    if (updates.author !== undefined) sanitizedUpdates.author = updates.author.trim()
-    if (updates.type !== undefined) sanitizedUpdates.type = updates.type
-    if (updates.rating !== undefined) sanitizedUpdates.rating = updates.rating || null
-    if (updates.date_finished !== undefined) sanitizedUpdates.date_finished = updates.date_finished || null
-    if (updates.review !== undefined) sanitizedUpdates.review = updates.review ? updates.review.trim() : null
-    sanitizedUpdates.pending_sync = true
+    console.log("Datos sanitizados para actualización:", JSON.stringify(sanitizedBook, null, 2))
 
-    console.log("Datos sanitizados:", JSON.stringify(sanitizedUpdates, null, 2))
-
-    // Actualizar en localStorage primero
+    // Actualizar en localStorage (modo offline-first)
     if (typeof window !== "undefined") {
-      const localBooks = getLocalBooks()
-      const bookIndex = localBooks.findIndex((b) => b.id === id || b.local_id === id)
-      const supabaseSuccess = false
+      try {
+        const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
+        const index = books.findIndex((b: any) => b.id === bookId || b.local_id === bookId)
 
-      if (bookIndex !== -1) {
-        const updatedBook = { ...localBooks[bookIndex], ...sanitizedUpdates }
-        localBooks[bookIndex] = updatedBook
-        localStorage.setItem("giuli-books", JSON.stringify(localBooks))
+        if (index >= 0) {
+          // Marcar como pendiente de sincronización
+          books[index] = {
+            ...books[index],
+            ...sanitizedBook,
+            pending_sync: true,
+          }
+          localStorage.setItem("giuli-books", JSON.stringify(books))
+          console.log("Libro actualizado en localStorage:", books[index])
+
+          // Disparar evento de actualización
+          window.dispatchEvent(new CustomEvent("booksUpdated", { detail: books }))
+        }
+      } catch (error) {
+        console.error("Error al actualizar en localStorage:", error)
       }
     }
 
@@ -208,11 +229,13 @@ export async function updateBookAction(id: string, updates: any) {
     let supabaseSuccess = false
     try {
       const supabase = createClient()
-      const userId = getUserId()
+
+      console.log("Intentando actualizar en Supabase con ID:", bookId)
+
       const { data, error } = await supabase
         .from("books")
-        .update(sanitizedUpdates)
-        .eq("id", id)
+        .update(sanitizedBook)
+        .eq("id", bookId)
         .eq("user_id", userId)
         .select()
 
@@ -221,30 +244,36 @@ export async function updateBookAction(id: string, updates: any) {
         // No lanzamos error aquí, continuamos con el flujo
       } else {
         console.log("Libro actualizado con éxito en Supabase:", data)
-        // Actualizar el estado de sincronización en localStorage
+        supabaseSuccess = true
+
+        // Si la actualización en Supabase fue exitosa, actualizar el localStorage para marcar como sincronizado
         if (typeof window !== "undefined") {
-          const localBooks = getLocalBooks()
-          const bookIndex = localBooks.findIndex((b) => b.id === id || b.local_id === id)
-          if (bookIndex !== -1) {
-            localBooks[bookIndex].pending_sync = false
-            localStorage.setItem("giuli-books", JSON.stringify(localBooks))
+          try {
+            const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
+            const index = books.findIndex((b: any) => b.id === bookId)
+
+            if (index >= 0) {
+              books[index] = { ...books[index], ...sanitizedBook, pending_sync: false }
+              localStorage.setItem("giuli-books", JSON.stringify(books))
+              console.log("Libro actualizado en localStorage como sincronizado:", books[index])
+            }
+          } catch (error) {
+            console.error("Error al actualizar estado de sincronización en localStorage:", error)
           }
         }
-        supabaseSuccess = true
       }
     } catch (supabaseError) {
-      console.error("Error al conectar con Supabase:", supabaseError)
+      console.error("Error al conectar con Supabase para actualización:", supabaseError)
       // No lanzamos error aquí, continuamos con el flujo
     }
 
     // Revalidar rutas después de la actualización
     await revalidateBookPages()
 
-    // Devolver resultado antes de la redirección
+    // Devolver resultado
     return {
       success: true,
       supabaseSuccess,
-      bookId: id,
       message: supabaseSuccess
         ? "Libro actualizado en Supabase y localmente"
         : "Libro actualizado localmente, pendiente de sincronización",
@@ -255,84 +284,62 @@ export async function updateBookAction(id: string, updates: any) {
   }
 }
 
-// Eliminar un libro (Server Action)
-export async function deleteBookAction(id: string) {
-  console.log("Iniciando deleteBookAction para libro ID:", id)
+// Función para eliminar un libro
+export async function deleteBookAction(bookId: string) {
+  console.log("Iniciando deleteBookAction con ID:", bookId)
 
   try {
-    // Verificar la conexión a Supabase antes de continuar
-    const connectionTest = await testSupabaseConnection()
-    console.log("Resultado de prueba de conexión:", connectionTest)
+    // Obtener el ID de usuario
+    const userId = getUserId()
+    console.log("ID de usuario para eliminar libro:", userId)
 
-    if (!connectionTest.success) {
-      console.error("Problema de conexión con Supabase:", connectionTest.error)
-      // Continuamos para eliminar en localStorage, pero registramos el error
-    }
-
-    // Eliminar de localStorage primero
+    // Eliminar de localStorage (modo offline-first)
     if (typeof window !== "undefined") {
-      const localBooks = getLocalBooks()
-      const filteredBooks = localBooks.filter((b) => b.id !== id && b.local_id !== id)
-      localStorage.setItem("giuli-books", JSON.stringify(filteredBooks))
+      try {
+        const books = JSON.parse(localStorage.getItem("giuli-books") || "[]")
+        const filteredBooks = books.filter((b: any) => b.id !== bookId && b.local_id !== bookId)
+        localStorage.setItem("giuli-books", JSON.stringify(filteredBooks))
+        console.log("Libro eliminado de localStorage, quedan:", filteredBooks.length)
 
-      // Disparar evento de actualización
-      if (typeof window.dispatchEvent === "function") {
-        window.dispatchEvent(new CustomEvent("booksUpdated", { detail: { action: "delete", id } }))
+        // Disparar evento de actualización
+        window.dispatchEvent(
+          new CustomEvent("booksUpdated", {
+            detail: { action: "delete", id: bookId },
+          }),
+        )
+      } catch (error) {
+        console.error("Error al eliminar de localStorage:", error)
       }
     }
-
-    let supabaseSuccess = false
 
     // Intentar eliminar de Supabase
+    let supabaseSuccess = false
     try {
       const supabase = createClient()
-      const userId = getUserId()
 
-      // Imprimir información de depuración
-      console.log("Intentando eliminar libro con ID:", id)
-      console.log("Usuario ID:", userId)
+      console.log("Intentando eliminar de Supabase con ID:", bookId)
 
-      // Primero verificar si el libro existe
-      const { data: bookData, error: bookError } = await supabase
-        .from("books")
-        .select("*")
-        .eq("id", id)
-        .eq("user_id", userId)
-        .single()
-
-      if (bookError) {
-        console.error("Error al buscar el libro para eliminar:", bookError)
-        throw new Error(`No se pudo encontrar el libro: ${bookError.message}`)
-      }
-
-      if (!bookData) {
-        console.error("El libro no existe o no pertenece al usuario")
-        throw new Error("El libro no existe o no pertenece al usuario")
-      }
-
-      // Ahora intentar eliminar
-      const { error } = await supabase.from("books").delete().eq("id", id).eq("user_id", userId)
+      const { error } = await supabase.from("books").delete().eq("id", bookId).eq("user_id", userId)
 
       if (error) {
-        console.error("Error al eliminar libro en Supabase:", error)
-        throw new Error(`Error al eliminar: ${error.message}`)
+        console.error("Error al eliminar libro de Supabase:", error)
+        // No lanzamos error aquí, continuamos con el flujo
       } else {
         console.log("Libro eliminado con éxito de Supabase")
         supabaseSuccess = true
       }
     } catch (supabaseError) {
-      console.error("Error al conectar con Supabase:", supabaseError)
-      throw supabaseError
+      console.error("Error al conectar con Supabase para eliminación:", supabaseError)
+      // No lanzamos error aquí, continuamos con el flujo
     }
 
     // Revalidar rutas después de la eliminación
     await revalidateBookPages()
 
-    // Devolver resultado antes de la redirección
+    // Devolver resultado
     return {
       success: true,
       supabaseSuccess,
-      bookId: id,
       message: supabaseSuccess ? "Libro eliminado de Supabase y localmente" : "Libro eliminado localmente",
     }
   } catch (error) {
@@ -341,34 +348,40 @@ export async function deleteBookAction(id: string) {
   }
 }
 
-// Sincronizar libros pendientes con Supabase
+// Añadir la función syncPendingBooksAction al final del archivo
+
+// Función para sincronizar libros pendientes
 export async function syncPendingBooksAction() {
+  console.log("Iniciando sincronización de libros pendientes")
+
   try {
-    // Verificar la conexión a Supabase antes de continuar
-    const connectionTest = await testSupabaseConnection()
-    console.log("Resultado de prueba de conexión:", connectionTest)
+    // Importar la función de sincronización desde el módulo local-storage
+    const { syncLocalBooks } = await import("@/lib/local-storage")
 
-    if (!connectionTest.success) {
-      return {
-        success: false,
-        message: "No se pudo conectar con Supabase",
-        details: connectionTest.error,
-      }
-    }
-
+    // Ejecutar la sincronización
     const result = await syncLocalBooks()
-    await revalidateBookPages()
+
+    // Revalidar rutas después de la sincronización
+    revalidatePath("/dashboard")
+    revalidatePath("/books")
+    revalidatePath("/favorites")
+
+    console.log("Resultado de sincronización:", result)
+
     return {
-      success: true,
-      message: "Sincronización completada",
+      success: result.success,
+      message: result.success
+        ? `Se sincronizaron ${result.synced} libros correctamente`
+        : `Error al sincronizar. ${result.synced} sincronizados, ${result.failed} fallidos`,
       details: result,
     }
   } catch (error) {
-    console.error("Error al sincronizar libros:", error)
+    console.error("Error en syncPendingBooksAction:", error)
+
     return {
       success: false,
-      message: "Error al sincronizar",
-      details: error,
+      message: "Error al sincronizar libros pendientes",
+      error: String(error),
     }
   }
 }

@@ -44,7 +44,7 @@ export function BookCard({ book, type, showActions = false }: BookCardProps) {
 
             {type === "wishlist" && (
               <div className="mt-2 flex items-center text-sm text-[#888888]">
-                <span className="mr-1">✨</span> En tu lista de deseos
+                <span className="mr-1">✨</span> En tu wishlist
               </div>
             )}
           </div>
