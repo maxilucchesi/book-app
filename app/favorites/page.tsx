@@ -46,7 +46,7 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen bg-texture p-6">
       <div className="mx-auto max-w-md">
         <header className="mb-8 flex items-center justify-between">
           <div className="flex items-center">
@@ -58,50 +58,48 @@ export default function FavoritesPage() {
           <ViewModeToggle viewMode={viewMode} onChange={handleViewModeChange} />
         </header>
 
-        <div className="bg-texture rounded-xl p-4">
-          {isLoading ? (
-            <div className="grid grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="rounded-xl bg-white shadow-sm animate-pulse">
-                  <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
-                  <div className="p-3">
-                    <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
-                  </div>
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="rounded-xl bg-white shadow-sm animate-pulse">
+                <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
+                <div className="p-3">
+                  <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
                 </div>
+              </div>
+            ))}
+          </div>
+        ) : favoriteBooks.length > 0 ? (
+          viewMode === "gallery" ? (
+            <div className="grid grid-cols-2 gap-4">
+              {favoriteBooks.map((book) => (
+                <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="gallery" />
               ))}
             </div>
-          ) : favoriteBooks.length > 0 ? (
-            viewMode === "gallery" ? (
-              <div className="grid grid-cols-2 gap-4">
-                {favoriteBooks.map((book) => (
-                  <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="gallery" />
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {favoriteBooks.map((book) => (
-                  <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="list" />
-                ))}
-              </div>
-            )
           ) : (
-            <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-              <p className="text-[#888888]">Aún no tienes libros favoritos</p>
-              <p className="mt-2 text-sm text-[#888888]">Califica un libro con 5 estrellas para verlo aquí</p>
-              <Link href="/add-book" className="mt-4 inline-block text-sm text-[#FFA69E] hover:underline">
-                Añadir un nuevo libro
-              </Link>
+            <div className="space-y-4">
+              {favoriteBooks.map((book) => (
+                <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="list" />
+              ))}
             </div>
-          )}
+          )
+        ) : (
+          <div className="rounded-xl bg-white p-8 text-center shadow-sm">
+            <p className="text-[#888888]">Aún no tienes libros favoritos</p>
+            <p className="mt-2 text-sm text-[#888888]">Califica un libro con 5 estrellas para verlo aquí</p>
+            <Link href="/add-book" className="mt-4 inline-block text-sm text-[#FFA69E] hover:underline">
+              Añadir un nuevo libro
+            </Link>
+          </div>
+        )}
 
-          {favoriteBooks.length > 0 && (
-            <div className="mt-8 text-center">
-              <p className="text-sm text-[#888888]">Estos son los libros que tocaron tu corazón este año</p>
-              <div className="mt-4 text-2xl">✨📚💖</div>
-            </div>
-          )}
-        </div>
+        {favoriteBooks.length > 0 && (
+          <div className="mt-8 text-center">
+            <p className="text-sm text-[#888888]">Estos son los libros que tocaron tu corazón este año</p>
+            <div className="mt-4 text-2xl">✨📚💖</div>
+          </div>
+        )}
       </div>
     </div>
   )

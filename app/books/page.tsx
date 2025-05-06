@@ -65,7 +65,7 @@ export default function BooksPage({
   const filteredBooks = filter === "all" ? books : books.filter((book) => book.type === filter)
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen bg-texture p-6">
       <div className="mx-auto max-w-md">
         <header className="mb-8 flex items-center justify-between">
           <div className="flex items-center">
@@ -79,66 +79,64 @@ export default function BooksPage({
 
         <BookFilter currentFilter={filter} />
 
-        <div className="bg-texture rounded-xl p-4 mt-6">
-          <div className={viewMode === "gallery" ? "grid grid-cols-2 gap-4" : "space-y-4"}>
-            {isLoading ? (
-              viewMode === "gallery" ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
-                      <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
-                      <div className="p-3">
-                        <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
-                      </div>
+        <div className={viewMode === "gallery" ? "grid grid-cols-2 gap-4 mt-6" : "space-y-4 mt-6"}>
+          {isLoading ? (
+            viewMode === "gallery" ? (
+              <div className="grid grid-cols-2 gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
+                    <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
+                    <div className="p-3">
+                      <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
-                      <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : filteredBooks.length > 0 ? (
-              viewMode === "gallery" ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {filteredBooks.map((book) => (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type={book.type as "read" | "wishlist"}
-                      showActions={false}
-                      viewMode={viewMode}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredBooks.map((book) => (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type={book.type as "read" | "wishlist"}
-                      showActions
-                      viewMode={viewMode}
-                    />
-                  ))}
-                </div>
-              )
-            ) : (
-              <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-                <p className="text-[#888888]">No books found in this category</p>
-                <Link href="/add-book" className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline">
-                  Add a new book
-                </Link>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+            ) : (
+              <div className="space-y-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
+                    <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+                  </div>
+                ))}
+              </div>
+            )
+          ) : filteredBooks.length > 0 ? (
+            viewMode === "gallery" ? (
+              <div className="grid grid-cols-2 gap-4">
+                {filteredBooks.map((book) => (
+                  <BookCard
+                    key={book.id || book.local_id || Date.now()}
+                    book={book}
+                    type={book.type as "read" | "wishlist"}
+                    showActions={false}
+                    viewMode={viewMode}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredBooks.map((book) => (
+                  <BookCard
+                    key={book.id || book.local_id || Date.now()}
+                    book={book}
+                    type={book.type as "read" | "wishlist"}
+                    showActions
+                    viewMode={viewMode}
+                  />
+                ))}
+              </div>
+            )
+          ) : (
+            <div className="rounded-xl bg-white p-8 text-center shadow-sm">
+              <p className="text-[#888888]">No books found in this category</p>
+              <Link href="/add-book" className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline">
+                Add a new book
+              </Link>
+            </div>
+          )}
         </div>
 
         <Link href="/add-book">
