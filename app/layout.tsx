@@ -3,6 +3,7 @@ import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
+import { PageBackground } from "@/components/page-background"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -24,7 +25,7 @@ export const metadata = {
     initialScale: 1,
     maximumScale: 1,
   },
-  themeColor: "#FFFEFA",
+  themeColor: "#FFFEF5",
     generator: 'v0.dev'
 }
 
@@ -41,9 +42,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Mis Lecturas" />
-        <meta name="theme-color" content="#FFFEFA" />
+        <meta name="theme-color" content="#FFFEF5" />
         <meta name="application-name" content="Mis Lecturas" />
-        <meta name="msapplication-TileColor" content="#FFFEFA" />
+        <meta name="msapplication-TileColor" content="#FFFEF5" />
         <meta name="msapplication-TileImage" content="/apple-icon.png" />
         <style>
           {`
@@ -62,6 +63,7 @@ export default function RootLayout({
         </style>
       </head>
       <body className={`${inter.variable} font-sans`}>
+        <PageBackground />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />

@@ -25,9 +25,15 @@
   --radius: 1rem;
 }
 
+html,
 body {
-  background-color: #fffefa;
-  background-image: url("https://www.transparenttextures.com/patterns/egg-shell.png");
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  /* Remove any background properties from body */
+  background-color: transparent;
   color: #222222;
 }
 
