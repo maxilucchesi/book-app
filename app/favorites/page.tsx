@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { getFavoriteBooks } from "@/lib/books"
-import { ViewModeToggle } from "@/components/view-mode-toggle"
+import { UserNav } from "@/components/user-nav"
 import { BookCard } from "@/components/book-card"
+import { toast } from "@/components/ui/use-toast"
 
 export default function FavoritesPage() {
   const [favoriteBooks, setFavoriteBooks] = useState<any[]>([])
@@ -21,6 +22,11 @@ export default function FavoritesPage() {
         setFavoriteBooks(books)
       } catch (error) {
         console.error("Error loading favorite books:", error)
+        toast({
+          title: "Error",
+          description: "No se pudieron cargar los libros favoritos. Intenta refrescar la página.",
+          variant: "destructive",
+        })
       } finally {
         setIsLoading(false)
       }
@@ -55,7 +61,7 @@ export default function FavoritesPage() {
             </Link>
             <h1 className="font-serif text-2xl font-normal text-[#222222]">Tus Mejores Lecturas del Año 💫</h1>
           </div>
-          <ViewModeToggle viewMode={viewMode} onChange={handleViewModeChange} />
+          <UserNav viewMode={viewMode} onViewModeChange={handleViewModeChange} />
         </header>
 
         {isLoading ? (

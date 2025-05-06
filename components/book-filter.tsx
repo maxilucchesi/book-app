@@ -20,20 +20,11 @@ export function BookFilter({ currentFilter }: BookFilterProps) {
       <Button
         variant="ghost"
         className={`flex-1 rounded-full py-2 text-sm ${
-          currentFilter === "all" ? "bg-[#D0E2FF] text-[#222222]" : "text-[#888888] hover:text-[#222222]"
-        } transition-all duration-200`}
-        onClick={() => setFilter("all")}
-      >
-        All
-      </Button>
-      <Button
-        variant="ghost"
-        className={`flex-1 rounded-full py-2 text-sm ${
           currentFilter === "read" ? "bg-[#D0E2FF] text-[#222222]" : "text-[#888888] hover:text-[#222222]"
         } transition-all duration-200`}
         onClick={() => setFilter("read")}
       >
-        Read
+        Leídos
       </Button>
       <Button
         variant="ghost"
