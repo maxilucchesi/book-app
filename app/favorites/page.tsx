@@ -19,6 +19,7 @@ export default function FavoritesPage() {
       setIsLoading(true)
       try {
         const books = await getFavoriteBooks()
+        console.log("Loaded favorite books:", books)
         setFavoriteBooks(books)
       } catch (error) {
         console.error("Error loading favorite books:", error)

@@ -152,13 +152,7 @@ export async function getBookById(id: string) {
 // Obtener libros favoritos (con rating 5)
 export async function getFavoriteBooks() {
   try {
-    // Primero intentamos filtrar de localStorage (para modo offline)
-    const localBooks = getLocalBooks()
-    if (localBooks.length > 0) {
-      return localBooks.filter((book) => book.type === "read" && book.rating === 5)
-    }
-
-    // Si no hay datos locales, intentamos obtener de Supabase
+    // Intentamos obtener de Supabase primero
     const supabase = createClient()
     const userId = getUserId()
 
@@ -168,16 +162,45 @@ export async function getFavoriteBooks() {
       .eq("user_id", userId)
       .eq("type", "read")
       .eq("rating", 5)
-      .order("date_finished", { ascending: false })
+      .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("Error fetching favorite books:", error)
+      console.error("Error fetching favorite books from Supabase:", error)
+
+      // Si hay error, intentamos obtener de localStorage
+      const localBooks = getLocalBooks()
+      if (localBooks.length > 0) {
+        console.log("Falling back to local storage for favorite books")
+        // Filtramos explícitamente para asegurarnos de que solo se devuelvan libros con rating 5
+        return localBooks.filter((book) => book.type === "read" && book.rating === 5)
+      }
       return []
     }
 
-    return data || []
+    if (data && data.length > 0) {
+      console.log(`Retrieved ${data.length} favorite books from Supabase`)
+      return data
+    }
+
+    // Si no hay datos en Supabase, intentamos obtener de localStorage
+    const localBooks = getLocalBooks()
+    if (localBooks.length > 0) {
+      console.log("No Supabase data, using local storage for favorite books")
+      // Filtramos explícitamente para asegurarnos de que solo se devuelvan libros con rating 5
+      return localBooks.filter((book) => book.type === "read" && book.rating === 5)
+    }
+
+    return []
   } catch (error) {
     console.error("Error in getFavoriteBooks:", error)
+
+    // En caso de error, intentamos obtener de localStorage
+    const localBooks = getLocalBooks()
+    if (localBooks.length > 0) {
+      // Filtramos explícitamente para asegurarnos de que solo se devuelvan libros con rating 5
+      return localBooks.filter((book) => book.type === "read" && book.rating === 5)
+    }
+
     return []
   }
 }
