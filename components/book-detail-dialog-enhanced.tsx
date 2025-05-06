@@ -74,15 +74,19 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
           {/* Portada del libro si está disponible */}
           {book.thumbnail ? (
             <div className="flex justify-center mb-4">
-              <img
-                src={book.thumbnail || "/placeholder.svg"}
-                alt={book.title}
-                className="h-52 rounded-md shadow-md object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "/abstract-book-cover.png"
-                  e.currentTarget.className = "h-52 w-32 rounded-md shadow-md object-cover bg-gray-100"
-                }}
-              />
+              <div className="h-52 w-32 rounded-md shadow-md overflow-hidden bg-gray-100">
+                {" "}
+                {/* Añadido ancho fijo y overflow hidden */}
+                <img
+                  src={book.thumbnail || "/placeholder.svg"}
+                  alt={book.title}
+                  className="h-full w-full object-contain" /* Cambiado a object-contain y añadido w-full */
+                  onError={(e) => {
+                    e.currentTarget.src = "/abstract-book-cover.png"
+                    e.currentTarget.className = "h-full w-full object-contain bg-gray-100"
+                  }}
+                />
+              </div>
             </div>
           ) : (
             <div className="flex justify-center mb-4">

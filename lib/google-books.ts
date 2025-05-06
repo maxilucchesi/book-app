@@ -72,22 +72,18 @@ export async function getBookDetails(bookId: string): Promise<GoogleBookVolume |
 }
 
 // Función para mejorar la URL de la imagen para obtener mayor resolución
-function getHighResImageUrl(url: string | undefined): string {
+export function getHighResImageUrl(url: string | undefined): string {
   if (!url) return ""
 
-  // Reemplazar zoom=1 por zoom=3 para obtener mayor resolución
-  if (url.includes("zoom=1")) {
-    return url.replace("zoom=1", "zoom=3")
-  }
+  // Usar un zoom más bajo (2) para evitar problemas de carga
+  if (url.includes("books.google.com")) {
+    // Si la URL ya tiene un parámetro zoom, reemplazarlo con zoom=2
+    if (url.includes("zoom=")) {
+      return url.replace(/zoom=\d/, "zoom=2")
+    }
 
-  // Si la URL es de Google Books y no tiene parámetro zoom, añadirlo
-  if (url.includes("books.google.com") && !url.includes("zoom=")) {
-    return url.includes("?") ? `${url}&zoom=3` : `${url}?zoom=3`
-  }
-
-  // Si es una URL de thumbnail estándar, intentar obtener una versión más grande
-  if (url.includes("&img=1&")) {
-    return url.replace("&img=1&", "&img=2&")
+    // Si la URL no tiene un parámetro zoom, añadirlo
+    return url.includes("?") ? `${url}&zoom=2` : `${url}?zoom=2`
   }
 
   return url
@@ -111,6 +107,11 @@ export function extractBookInfo(volume: GoogleBookVolume) {
 
     // Mejorar la resolución de la URL
     thumbnail = getHighResImageUrl(thumbnail)
+
+    // For specific problematic books, use a more reliable URL format
+    if (volumeInfo.title.includes("olvido") && volume.id) {
+      thumbnail = `https://books.google.com/books/content?id=${volume.id}&printsec=frontcover&img=1&zoom=3&source=gbs_api`
+    }
   }
 
   return {

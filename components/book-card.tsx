@@ -32,18 +32,15 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
   const getEnhancedImageUrl = (url: string | null | undefined): string => {
     if (!url) return "/abstract-book-cover.png"
 
-    // Only enhance for gallery view
-    if (viewMode !== "gallery") return url
-
-    // For Google Books URLs, set zoom level to 4
+    // Para URLs de Google Books, usar un zoom más bajo (2 en lugar de 4)
     if (url.includes("books.google.com")) {
-      // If URL already has a zoom parameter, replace it with zoom=4
+      // Si la URL ya tiene un parámetro zoom, reemplazarlo con zoom=2
       if (url.includes("zoom=")) {
-        return url.replace(/zoom=\d/, "zoom=4")
+        return url.replace(/zoom=\d/, "zoom=2")
       }
 
-      // If URL doesn't have a zoom parameter, add it
-      return url.includes("?") ? `${url}&zoom=4` : `${url}?zoom=4`
+      // Si la URL no tiene un parámetro zoom, añadirlo
+      return url.includes("?") ? `${url}&zoom=2` : `${url}?zoom=2`
     }
 
     return url
@@ -54,8 +51,8 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
       <BookDetailDialogEnhanced book={book} type={type}>
         <div className="cursor-pointer hover:shadow-md transition-all duration-200">
           <div className="flex flex-col">
-            {/* Book cover with 2:3 aspect ratio */}
-            <div className="relative rounded-t-lg overflow-hidden bg-gray-100">
+            {/* Book cover container - sin bordes redondeados */}
+            <div className="relative overflow-hidden bg-gray-100">
               {/* Favorite indicator */}
               {book.rating === 5 && (
                 <div className="absolute top-2 left-2 z-10 bg-white rounded-full p-1 shadow-sm text-[#FFA69E]">
@@ -70,29 +67,25 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
                 </div>
               )}
 
-              {/* Book cover image with proper aspect ratio */}
-              <div className="aspect-[2/3] w-full">
-                {book.thumbnail ? (
-                  <img
-                    src={getEnhancedImageUrl(book.thumbnail) || "/placeholder.svg"}
-                    alt={book.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = "/abstract-book-cover.png"
-                      e.currentTarget.className = "w-full h-full object-contain bg-gray-100"
-                    }}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-4xl">📚</span>
-                  </div>
-                )}
+              {/* Book cover image con aspect ratio 1:1.545 */}
+              <div className="aspect-[1/1.545] w-full">
+                <img
+                  src={getEnhancedImageUrl(book.thumbnail) || "/placeholder.svg"}
+                  alt={book.title}
+                  className="w-full h-full object-cover object-top" /* Cambiado a object-cover y object-top para priorizar la parte superior */
+                  onError={(e) => {
+                    e.currentTarget.src = "/abstract-book-cover.png"
+                    e.currentTarget.className = "w-full h-full object-contain bg-gray-100"
+                  }}
+                  loading="lazy"
+                />
               </div>
             </div>
 
-            {/* Book details with fixed height and tooltip */}
-            <div className={`p-3 pb-4 ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} rounded-b-lg h-[5.5rem]`}>
+            {/* Book details con bordes redondeados solo en la parte inferior */}
+            <div
+              className={`p-3 pb-4 ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} rounded-b-lg h-[5.5rem] shadow-sm`}
+            >
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -134,10 +127,10 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               <img
                 src={book.thumbnail || "/placeholder.svg"}
                 alt={book.title}
-                className="h-20 w-14 object-cover rounded-sm shadow-sm"
+                className="h-20 w-14 object-cover object-top rounded-sm shadow-sm" /* Cambiado a object-cover y object-top */
                 onError={(e) => {
                   e.currentTarget.src = "/abstract-book-cover.png"
-                  e.currentTarget.className = "h-20 w-14 rounded-sm shadow-sm object-cover bg-gray-100"
+                  e.currentTarget.className = "h-20 w-14 rounded-sm shadow-sm object-contain bg-gray-100"
                 }}
                 loading="lazy"
               />
