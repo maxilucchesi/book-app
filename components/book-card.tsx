@@ -28,6 +28,27 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
   // Compact rating display for gallery view
   const compactRating = book.rating ? `${book.rating}⭐️` : null
 
+  // Function to enhance image URL for gallery view
+  const getEnhancedImageUrl = (url: string | null | undefined): string => {
+    if (!url) return "/abstract-book-cover.png"
+
+    // Only enhance for gallery view
+    if (viewMode !== "gallery") return url
+
+    // For Google Books URLs, set zoom level to 4
+    if (url.includes("books.google.com")) {
+      // If URL already has a zoom parameter, replace it with zoom=4
+      if (url.includes("zoom=")) {
+        return url.replace(/zoom=\d/, "zoom=4")
+      }
+
+      // If URL doesn't have a zoom parameter, add it
+      return url.includes("?") ? `${url}&zoom=4` : `${url}?zoom=4`
+    }
+
+    return url
+  }
+
   if (viewMode === "gallery") {
     return (
       <BookDetailDialogEnhanced book={book} type={type}>
@@ -53,13 +74,14 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               <div className="aspect-[2/3] w-full">
                 {book.thumbnail ? (
                   <img
-                    src={book.thumbnail || "/placeholder.svg"}
+                    src={getEnhancedImageUrl(book.thumbnail) || "/placeholder.svg"}
                     alt={book.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = "/abstract-book-cover.png"
                       e.currentTarget.className = "w-full h-full object-contain bg-gray-100"
                     }}
+                    loading="lazy"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
@@ -117,6 +139,7 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
                   e.currentTarget.src = "/abstract-book-cover.png"
                   e.currentTarget.className = "h-20 w-14 rounded-sm shadow-sm object-cover bg-gray-100"
                 }}
+                loading="lazy"
               />
             </div>
           ) : null}
