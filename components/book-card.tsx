@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Edit2, Heart, CloudOff } from "lucide-react"
+import { Edit2, CloudOff } from "lucide-react"
 import { BookDetailDialogEnhanced } from "@/components/book-detail-dialog-enhanced"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
@@ -51,16 +51,9 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
       <BookDetailDialogEnhanced book={book} type={type}>
         <div className="cursor-pointer hover:shadow-md transition-all duration-200">
           <div className="flex flex-col">
-            {/* Book cover container - sin bordes redondeados */}
-            <div className="relative overflow-hidden bg-gray-100">
-              {/* Favorite indicator */}
-              {book.rating === 5 && (
-                <div className="absolute top-2 left-2 z-10 bg-white rounded-full p-1 shadow-sm text-[#FFA69E]">
-                  <Heart className="h-4 w-4 fill-[#FFA69E]" />
-                </div>
-              )}
-
-              {/* Sync status indicator */}
+            {/* Book cover container - con bordes redondeados en la parte superior */}
+            <div className="relative overflow-hidden bg-gray-100 rounded-t-lg">
+              {/* Sync status indicator - Eliminado el indicador de favorito */}
               {book.pending_sync && (
                 <div className="absolute bottom-2 right-2 z-10 bg-white rounded-full p-1 shadow-sm text-amber-500">
                   <CloudOff className="h-4 w-4" />
@@ -72,7 +65,7 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
                 <img
                   src={getEnhancedImageUrl(book.thumbnail) || "/placeholder.svg"}
                   alt={book.title}
-                  className="w-full h-full object-cover object-top" /* Cambiado a object-cover y object-top para priorizar la parte superior */
+                  className="w-full h-full object-cover object-top" /* Mantiene object-cover y object-top */
                   onError={(e) => {
                     e.currentTarget.src = "/abstract-book-cover.png"
                     e.currentTarget.className = "w-full h-full object-contain bg-gray-100"
@@ -82,7 +75,7 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               </div>
             </div>
 
-            {/* Book details con bordes redondeados solo en la parte inferior */}
+            {/* Book details con bordes redondeados en la parte inferior */}
             <div
               className={`p-3 pb-4 ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} rounded-b-lg h-[5.5rem] shadow-sm`}
             >
@@ -127,7 +120,7 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               <img
                 src={book.thumbnail || "/placeholder.svg"}
                 alt={book.title}
-                className="h-20 w-14 object-cover object-top rounded-sm shadow-sm" /* Cambiado a object-cover y object-top */
+                className="h-20 w-14 object-cover object-top rounded-sm shadow-sm"
                 onError={(e) => {
                   e.currentTarget.src = "/abstract-book-cover.png"
                   e.currentTarget.className = "h-20 w-14 rounded-sm shadow-sm object-contain bg-gray-100"
@@ -161,12 +154,7 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               </div>
 
               <div className="flex flex-col items-end">
-                {book.rating === 5 && (
-                  <div className="text-[#FFA69E]">
-                    <Heart className="h-5 w-5 fill-[#FFA69E]" />
-                  </div>
-                )}
-
+                {/* Eliminado el corazón para rating 5 */}
                 {book.pending_sync && (
                   <div className="text-amber-500 mt-1">
                     <CloudOff className="h-4 w-4" />

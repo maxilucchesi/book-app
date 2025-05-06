@@ -47,14 +47,6 @@ export function UserNav({ viewMode, onViewModeChange }: UserNavProps) {
     <div className="flex items-center gap-2">
       {viewMode && onViewModeChange && <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />}
 
-      {/* Favorites Button */}
-      <Link href="/favorites">
-        <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-gray-300">
-          <Heart className="h-4 w-4 text-gray-500" />
-          <span className="sr-only">Favoritos</span>
-        </Button>
-      </Link>
-
       {/* User Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -69,6 +61,12 @@ export function UserNav({ viewMode, onViewModeChange }: UserNavProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <Link href="/favorites">
+            <DropdownMenuItem className="cursor-pointer">
+              <Heart className="mr-2 h-4 w-4" />
+              <span>Favoritos</span>
+            </DropdownMenuItem>
+          </Link>
           <Link href="/admin">
             <DropdownMenuItem className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />

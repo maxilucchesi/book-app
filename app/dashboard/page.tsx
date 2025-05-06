@@ -116,15 +116,16 @@ export default function DashboardPage() {
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="min-h-screen bg-[#FDFCFB] p-6">
         <div className="mx-auto max-w-md">
-          <header className="mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="font-serif text-2xl font-normal text-[#222222]">Mis Lecturas</h1>
-              <p className="mt-1 text-sm text-[#888888]">{randomPhrase}</p>
+          <header className="mb-8">
+            <div className="flex items-center justify-between">
+              <h1 className="font-serif text-2xl font-normal text-[#222222] text-[2.4rem]">Mis Lecturas</h1>
+              <div className="flex items-center">
+                <UserNav viewMode={viewMode} onViewModeChange={handleViewModeChange} />
+              </div>
             </div>
-            <div className="flex items-center">
-              <UserNav viewMode={viewMode} onViewModeChange={handleViewModeChange} />
-            </div>
+            <p className="mt-1 text-sm text-[#888888]">{randomPhrase}</p>
           </header>
+
           {isBookDay && (
             <div className="mb-6 p-3 bg-[#FFF0EE] rounded-lg border border-[#FFA69E] text-center">
               <p className="text-[#222222] font-medium">✨📚 ¡Feliz Día Internacional del Libro! 📚✨</p>
@@ -149,7 +150,7 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
-                      <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
+                      <div className="aspect-[1/1.545] bg-gray-200 rounded-t-lg"></div>
                       <div className="p-3">
                         <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
                         <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
@@ -170,25 +171,31 @@ export default function DashboardPage() {
             ) : recentlyRead.length > 0 ? (
               viewMode === "gallery" ? (
                 <div className="grid grid-cols-2 gap-4">
-                  {recentlyRead.slice(0, 10).map((book) => (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type="read"
-                      viewMode={viewMode}
-                    />
-                  ))}
+                  {recentlyRead
+                    .slice(-6)
+                    .reverse()
+                    .map((book) => (
+                      <BookCard
+                        key={book.id || book.local_id || Date.now()}
+                        book={book}
+                        type="read"
+                        viewMode={viewMode}
+                      />
+                    ))}
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {recentlyRead.slice(0, 10).map((book) => (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type="read"
-                      viewMode={viewMode}
-                    />
-                  ))}
+                  {recentlyRead
+                    .slice(-6)
+                    .reverse()
+                    .map((book) => (
+                      <BookCard
+                        key={book.id || book.local_id || Date.now()}
+                        book={book}
+                        type="read"
+                        viewMode={viewMode}
+                      />
+                    ))}
                 </div>
               )
             ) : (
@@ -213,7 +220,7 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div key={index} className="rounded-xl bg-[#F5F5F5] shadow-sm animate-pulse">
-                      <div className="aspect-[2/3] bg-gray-300 rounded-t-lg"></div>
+                      <div className="aspect-[1/1.545] bg-gray-300 rounded-t-lg"></div>
                       <div className="p-3">
                         <div className="h-4 w-3/4 bg-gray-300 rounded mb-2"></div>
                         <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
@@ -234,25 +241,31 @@ export default function DashboardPage() {
             ) : wishlist.length > 0 ? (
               viewMode === "gallery" ? (
                 <div className="grid grid-cols-2 gap-4">
-                  {wishlist.slice(0, 10).map((book) => (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type="wishlist"
-                      viewMode={viewMode}
-                    />
-                  ))}
+                  {wishlist
+                    .slice(-6)
+                    .reverse()
+                    .map((book) => (
+                      <BookCard
+                        key={book.id || book.local_id || Date.now()}
+                        book={book}
+                        type="wishlist"
+                        viewMode={viewMode}
+                      />
+                    ))}
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {wishlist.slice(0, 10).map((book) => (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type="wishlist"
-                      viewMode={viewMode}
-                    />
-                  ))}
+                  {wishlist
+                    .slice(-6)
+                    .reverse()
+                    .map((book) => (
+                      <BookCard
+                        key={book.id || book.local_id || Date.now()}
+                        book={book}
+                        type="wishlist"
+                        viewMode={viewMode}
+                      />
+                    ))}
                 </div>
               )
             ) : (
