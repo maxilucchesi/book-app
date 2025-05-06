@@ -24,7 +24,7 @@ export const metadata = {
     initialScale: 1,
     maximumScale: 1,
   },
-  themeColor: "#FDFCFB",
+  themeColor: "#FFFEFA",
     generator: 'v0.dev'
 }
 
@@ -41,9 +41,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Mis Lecturas" />
-        <meta name="theme-color" content="#FDFCFB" />
+        <meta name="theme-color" content="#FFFEFA" />
         <meta name="application-name" content="Mis Lecturas" />
-        <meta name="msapplication-TileColor" content="#FDFCFB" />
+        <meta name="msapplication-TileColor" content="#FFFEFA" />
         <meta name="msapplication-TileImage" content="/apple-icon.png" />
         <style>
           {`
