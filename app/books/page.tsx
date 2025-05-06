@@ -72,7 +72,7 @@ export default function BooksPage({
 
   return (
     <div className="min-h-screen bg-[#FDFCFB] p-6">
-      <div className="mx-auto max-w-md">
+      <div className="mx-auto w-full max-w-md px-2">
         <header className="mb-8 flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/dashboard" className="mr-4">
@@ -85,10 +85,10 @@ export default function BooksPage({
 
         <BookFilter currentFilter={filter} />
 
-        <div className={viewMode === "gallery" ? "grid grid-cols-2 gap-4 mt-6" : "space-y-4 mt-6"}>
+        <div className={viewMode === "gallery" ? "grid grid-cols-2 gap-4 mt-6 w-full" : "space-y-4 mt-6 w-full"}>
           {isLoading ? (
             viewMode === "gallery" ? (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 w-full">
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
                     <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
@@ -111,7 +111,7 @@ export default function BooksPage({
             )
           ) : books.length > 0 ? (
             viewMode === "gallery" ? (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 w-full">
                 {getBalancedBooks(books).map((book, index) =>
                   book.isEmpty ? (
                     <div key={`empty-${index}`} className="invisible"></div>
