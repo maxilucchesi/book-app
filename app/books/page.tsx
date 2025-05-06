@@ -61,6 +61,15 @@ export default function BooksPage({
     }
   }
 
+  // Función para asegurar que los libros se muestren en filas completas
+  const getBalancedBooks = (books: any[]) => {
+    // Si hay un número impar de libros, añadir un elemento vacío para completar la fila
+    if (books.length % 2 !== 0) {
+      return [...books, { isEmpty: true }]
+    }
+    return books
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFCFB] p-6">
       <div className="mx-auto max-w-md">
@@ -103,15 +112,19 @@ export default function BooksPage({
           ) : books.length > 0 ? (
             viewMode === "gallery" ? (
               <div className="grid grid-cols-2 gap-4">
-                {books.map((book) => (
-                  <BookCard
-                    key={book.id || book.local_id || Date.now()}
-                    book={book}
-                    type={book.type as "read" | "wishlist"}
-                    showActions={false}
-                    viewMode={viewMode}
-                  />
-                ))}
+                {getBalancedBooks(books).map((book, index) =>
+                  book.isEmpty ? (
+                    <div key={`empty-${index}`} className="invisible"></div>
+                  ) : (
+                    <BookCard
+                      key={book.id || book.local_id || Date.now()}
+                      book={book}
+                      type={book.type as "read" | "wishlist"}
+                      showActions={false}
+                      viewMode={viewMode}
+                    />
+                  ),
+                )}
               </div>
             ) : (
               <div className="space-y-4">

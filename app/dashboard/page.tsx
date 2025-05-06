@@ -79,6 +79,15 @@ export default function DashboardPage() {
     setIsRefreshing(false)
   }
 
+  // Función para asegurar que los libros se muestren en filas completas
+  const getBalancedBooks = (books: any[]) => {
+    // Si hay un número impar de libros, añadir un elemento vacío para completar la fila
+    if (books.length % 2 !== 0) {
+      return [...books, { isEmpty: true }]
+    }
+    return books
+  }
+
   // Cargar datos y establecer frase aleatoria al montar el componente
   useEffect(() => {
     // Establecer una frase aleatoria
@@ -171,17 +180,18 @@ export default function DashboardPage() {
             ) : recentlyRead.length > 0 ? (
               viewMode === "gallery" ? (
                 <div className="grid grid-cols-2 gap-4">
-                  {recentlyRead
-                    .slice(-6)
-                    .reverse()
-                    .map((book) => (
+                  {getBalancedBooks(recentlyRead.slice(-6).reverse()).map((book, index) =>
+                    book.isEmpty ? (
+                      <div key={`empty-${index}`} className="invisible"></div>
+                    ) : (
                       <BookCard
                         key={book.id || book.local_id || Date.now()}
                         book={book}
                         type="read"
                         viewMode={viewMode}
                       />
-                    ))}
+                    ),
+                  )}
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -241,17 +251,18 @@ export default function DashboardPage() {
             ) : wishlist.length > 0 ? (
               viewMode === "gallery" ? (
                 <div className="grid grid-cols-2 gap-4">
-                  {wishlist
-                    .slice(-6)
-                    .reverse()
-                    .map((book) => (
+                  {getBalancedBooks(wishlist.slice(-6).reverse()).map((book, index) =>
+                    book.isEmpty ? (
+                      <div key={`empty-${index}`} className="invisible"></div>
+                    ) : (
                       <BookCard
                         key={book.id || book.local_id || Date.now()}
                         book={book}
                         type="wishlist"
                         viewMode={viewMode}
                       />
-                    ))}
+                    ),
+                  )}
                 </div>
               ) : (
                 <div className="space-y-4">
