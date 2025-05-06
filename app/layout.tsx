@@ -3,7 +3,6 @@ import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
-import { PageBackground } from "@/components/page-background"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -63,7 +62,6 @@ export default function RootLayout({
         </style>
       </head>
       <body className={`${inter.variable} font-sans`}>
-        <PageBackground />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />
