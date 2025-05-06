@@ -114,7 +114,7 @@ export default function DashboardPage() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-      <div className="min-h-screen bg-texture p-6">
+      <div className="min-h-screen bg-white p-6">
         <div className="mx-auto max-w-md">
           <header className="mb-8">
             <div className="flex items-center justify-between">
@@ -138,148 +138,150 @@ export default function DashboardPage() {
           {/* Componente de estado de sincronización */}
           <SyncStatus />
 
-          <section className="mb-8">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl text-[#222222]">Leídos recientemente</h2>
-              <Link href="/books?filter=read" className="text-sm text-[#888888] hover:text-[#FFA69E]">
-                Ver todos
-              </Link>
-            </div>
-            {isLoading ? (
-              viewMode === "gallery" ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
-                      <div className="aspect-[1/1.545] bg-gray-200 rounded-t-lg"></div>
-                      <div className="p-3">
-                        <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
-                      <div className="h-6 w-3/4 bg-gray-200 rounded mb-2 mx-auto"></div>
-                      <div className="h-4 w-1/2 bg-gray-200 rounded mx-auto"></div>
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : recentlyRead.length > 0 ? (
-              viewMode === "gallery" ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {recentlyRead
-                    .slice(-6)
-                    .reverse()
-                    .map((book) => (
-                      <BookCard
-                        key={book.id || book.local_id || Date.now()}
-                        book={book}
-                        type="read"
-                        viewMode={viewMode}
-                      />
-                    ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {recentlyRead
-                    .slice(-6)
-                    .reverse()
-                    .map((book) => (
-                      <BookCard
-                        key={book.id || book.local_id || Date.now()}
-                        book={book}
-                        type="read"
-                        viewMode={viewMode}
-                      />
-                    ))}
-                </div>
-              )
-            ) : (
-              <div className="rounded-xl bg-white p-4 text-center shadow-sm">
-                <p className="text-[#888888]">No hay libros añadidos aún</p>
-                <Link href="/add-book" className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline">
-                  Añade tu primer libro
+          <div className="bg-texture rounded-xl p-4">
+            <section className="mb-8">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-serif text-xl text-[#222222]">Leídos recientemente</h2>
+                <Link href="/books?filter=read" className="text-sm text-[#888888] hover:text-[#FFA69E]">
+                  Ver todos
                 </Link>
               </div>
-            )}
-          </section>
+              {isLoading ? (
+                viewMode === "gallery" ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
+                        <div className="aspect-[1/1.545] bg-gray-200 rounded-t-lg"></div>
+                        <div className="p-3">
+                          <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
+                          <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
+                        <div className="h-6 w-3/4 bg-gray-200 rounded mb-2 mx-auto"></div>
+                        <div className="h-4 w-1/2 bg-gray-200 rounded mx-auto"></div>
+                      </div>
+                    ))}
+                  </div>
+                )
+              ) : recentlyRead.length > 0 ? (
+                viewMode === "gallery" ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {recentlyRead
+                      .slice(-6)
+                      .reverse()
+                      .map((book) => (
+                        <BookCard
+                          key={book.id || book.local_id || Date.now()}
+                          book={book}
+                          type="read"
+                          viewMode={viewMode}
+                        />
+                      ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {recentlyRead
+                      .slice(-6)
+                      .reverse()
+                      .map((book) => (
+                        <BookCard
+                          key={book.id || book.local_id || Date.now()}
+                          book={book}
+                          type="read"
+                          viewMode={viewMode}
+                        />
+                      ))}
+                  </div>
+                )
+              ) : (
+                <div className="rounded-xl bg-white p-4 text-center shadow-sm">
+                  <p className="text-[#888888]">No hay libros añadidos aún</p>
+                  <Link href="/add-book" className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline">
+                    Añade tu primer libro
+                  </Link>
+                </div>
+              )}
+            </section>
 
-          <section className="mb-8">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl text-[#222222]">Wishlist</h2>
-              <Link href="/books?filter=wishlist" className="text-sm text-[#888888] hover:text-[#FFA69E]">
-                Ver todos
-              </Link>
-            </div>
-            {isLoading ? (
-              viewMode === "gallery" ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-[#F5F5F5] shadow-sm animate-pulse">
-                      <div className="aspect-[1/1.545] bg-gray-300 rounded-t-lg"></div>
-                      <div className="p-3">
-                        <div className="h-4 w-3/4 bg-gray-300 rounded mb-2"></div>
-                        <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-[#F5F5F5] p-4 text-center shadow-sm animate-pulse">
-                      <div className="h-6 w-3/4 bg-gray-300 rounded mb-2 mx-auto"></div>
-                      <div className="h-4 w-1/2 bg-gray-300 rounded mx-auto"></div>
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : wishlist.length > 0 ? (
-              viewMode === "gallery" ? (
-                <div className="grid grid-cols-2 gap-4">
-                  {wishlist
-                    .slice(-6)
-                    .reverse()
-                    .map((book) => (
-                      <BookCard
-                        key={book.id || book.local_id || Date.now()}
-                        book={book}
-                        type="wishlist"
-                        viewMode={viewMode}
-                      />
-                    ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {wishlist
-                    .slice(-6)
-                    .reverse()
-                    .map((book) => (
-                      <BookCard
-                        key={book.id || book.local_id || Date.now()}
-                        book={book}
-                        type="wishlist"
-                        viewMode={viewMode}
-                      />
-                    ))}
-                </div>
-              )
-            ) : (
-              <div className="rounded-xl bg-[#F5F5F5] p-4 text-center shadow-sm">
-                <p className="text-[#888888]">Tu wishlist está vacía</p>
-                <Link
-                  href="/add-book?type=wishlist"
-                  className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline"
-                >
-                  Añade libros a tu wishlist
+            <section className="mb-8">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-serif text-xl text-[#222222]">Wishlist</h2>
+                <Link href="/books?filter=wishlist" className="text-sm text-[#888888] hover:text-[#FFA69E]">
+                  Ver todos
                 </Link>
               </div>
-            )}
-          </section>
+              {isLoading ? (
+                viewMode === "gallery" ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={index} className="rounded-xl bg-[#F5F5F5] shadow-sm animate-pulse">
+                        <div className="aspect-[1/1.545] bg-gray-300 rounded-t-lg"></div>
+                        <div className="p-3">
+                          <div className="h-4 w-3/4 bg-gray-300 rounded mb-2"></div>
+                          <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="rounded-xl bg-[#F5F5F5] p-4 text-center shadow-sm animate-pulse">
+                        <div className="h-6 w-3/4 bg-gray-300 rounded mb-2 mx-auto"></div>
+                        <div className="h-4 w-1/2 bg-gray-300 rounded mx-auto"></div>
+                      </div>
+                    ))}
+                  </div>
+                )
+              ) : wishlist.length > 0 ? (
+                viewMode === "gallery" ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {wishlist
+                      .slice(-6)
+                      .reverse()
+                      .map((book) => (
+                        <BookCard
+                          key={book.id || book.local_id || Date.now()}
+                          book={book}
+                          type="wishlist"
+                          viewMode={viewMode}
+                        />
+                      ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {wishlist
+                      .slice(-6)
+                      .reverse()
+                      .map((book) => (
+                        <BookCard
+                          key={book.id || book.local_id || Date.now()}
+                          book={book}
+                          type="wishlist"
+                          viewMode={viewMode}
+                        />
+                      ))}
+                  </div>
+                )
+              ) : (
+                <div className="rounded-xl bg-[#F5F5F5] p-4 text-center shadow-sm">
+                  <p className="text-[#888888]">Tu wishlist está vacía</p>
+                  <Link
+                    href="/add-book?type=wishlist"
+                    className="mt-2 inline-block text-sm text-[#FFA69E] hover:underline"
+                  >
+                    Añade libros a tu wishlist
+                  </Link>
+                </div>
+              )}
+            </section>
+          </div>
 
           <Link href="/add-book-with-search">
             <div
