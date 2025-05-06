@@ -45,13 +45,11 @@ export function UserNav({ viewMode, onViewModeChange }: UserNavProps) {
 
   return (
     <div className="flex items-center gap-2">
-      {viewMode && onViewModeChange && <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />}
-
       {/* User Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <span className="text-xl">🦀</span>
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+            <span className="text-2xl">🦀</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -61,6 +59,17 @@ export function UserNav({ viewMode, onViewModeChange }: UserNavProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {viewMode && onViewModeChange && (
+            <>
+              <DropdownMenuItem className="cursor-default focus:bg-transparent">
+                <div className="flex w-full items-center justify-between">
+                  <span>Modo de vista</span>
+                  <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <Link href="/favorites">
             <DropdownMenuItem className="cursor-pointer">
               <Heart className="mr-2 h-4 w-4" />
