@@ -56,7 +56,7 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md rounded-xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-md rounded-xl max-h-[90vh] overflow-y-auto shadow-[0_1px_2px_rgba(0,0,0,0.07),0_4px_8px_rgba(0,0,0,0.05),0_12px_24px_rgba(0,0,0,0.03)]">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="font-serif text-2xl text-[#222222]">{book.title}</DialogTitle>
@@ -74,13 +74,11 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
           {/* Portada del libro si está disponible */}
           {book.thumbnail ? (
             <div className="flex justify-center mb-4">
-              <div className="h-52 w-32 rounded-md shadow-md overflow-hidden bg-gray-100">
-                {" "}
-                {/* Añadido ancho fijo y overflow hidden */}
+              <div className="h-52 w-32 rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden bg-gray-100">
                 <img
                   src={book.thumbnail || "/placeholder.svg"}
                   alt={book.title}
-                  className="h-full w-full object-contain" /* Cambiado a object-contain y añadido w-full */
+                  className="h-full w-full object-contain"
                   onError={(e) => {
                     e.currentTarget.src = "/abstract-book-cover.png"
                     e.currentTarget.className = "h-full w-full object-contain bg-gray-100"
@@ -90,7 +88,7 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
             </div>
           ) : (
             <div className="flex justify-center mb-4">
-              <div className="h-52 w-32 rounded-md shadow-md bg-gray-100 flex items-center justify-center">
+              <div className="h-52 w-32 rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.08)] bg-gray-100 flex items-center justify-center">
                 <span className="text-4xl">📚</span>
               </div>
             </div>
@@ -122,7 +120,9 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
               {book.review && (
                 <div className="flex flex-col">
                   <span className="text-sm text-[#888888] mb-2">Tus pensamientos:</span>
-                  <div className="bg-[#F5F5F5] p-3 rounded-lg text-sm text-[#222222]">{book.review}</div>
+                  <div className="bg-[#F5F5F5] p-3 rounded-lg text-sm text-[#222222] shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
+                    {book.review}
+                  </div>
                 </div>
               )}
             </>
@@ -173,7 +173,10 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
               <h4 className="text-sm font-medium text-[#222222] mb-2">Categorías</h4>
               <div className="flex flex-wrap gap-1">
                 {book.categories.map((category, index) => (
-                  <span key={index} className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">
+                  <span
+                    key={index}
+                    className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                  >
                     {category}
                   </span>
                 ))}
@@ -185,7 +188,7 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
           {book.description && (
             <div className="mt-4 border-t pt-4">
               <h4 className="text-sm font-medium text-[#222222] mb-2">Sinopsis</h4>
-              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)]">
                 {showFullDescription ? (
                   <>
                     <p className="whitespace-pre-line">{book.description}</p>
@@ -223,7 +226,7 @@ export function BookDetailDialogEnhanced({ book, type, children }: BookDetailDia
             Cerrar
           </Button>
           <Link href={`/edit-book/${book.id || book.local_id}`}>
-            <Button className="rounded-full bg-[#D0E2FF] text-[#222222] hover:bg-[#FFA69E]">
+            <Button className="rounded-full bg-[#D0E2FF] text-[#222222] hover:bg-[#FFA69E] shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
               <Edit2 className="h-4 w-4 mr-2" />
               Editar
             </Button>

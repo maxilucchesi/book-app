@@ -23,6 +23,13 @@
   --input: 217 100% 91%;
   --ring: 6 100% 81%;
   --radius: 1rem;
+
+  /* Shadow variables */
+  --shadow-color: 0, 0, 0;
+  --shadow-elevation-low: 0 2px 4px rgba(var(--shadow-color), 0.07);
+  --shadow-elevation-medium: 0 2px 4px rgba(var(--shadow-color), 0.07), 0 4px 8px rgba(var(--shadow-color), 0.05);
+  --shadow-elevation-high: 0 1px 2px rgba(var(--shadow-color), 0.07), 0 4px 8px rgba(var(--shadow-color), 0.05), 0 8px
+    16px rgba(var(--shadow-color), 0.03);
 }
 
 @layer base {
@@ -67,6 +74,25 @@ body::after {
 main,
 div[data-nextjs-root] {
   background-color: transparent !important;
+}
+
+/* Clases de utilidad para sombras */
+.shadow-float-sm {
+  box-shadow: var(--shadow-elevation-low);
+}
+
+.shadow-float-md {
+  box-shadow: var(--shadow-elevation-medium);
+}
+
+.shadow-float-lg {
+  box-shadow: var(--shadow-elevation-high);
+}
+
+.hover-float:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.06), 0 16px 32px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 @keyframes bounce-slow {

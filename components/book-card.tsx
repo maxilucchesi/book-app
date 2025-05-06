@@ -46,13 +46,25 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
     return url
   }
 
+  // Sombras multicapa para efecto flotante
+  const baseCardShadow = "shadow-[0_2px_4px_rgba(0,0,0,0.07),0_4px_8px_rgba(0,0,0,0.05),0_8px_16px_rgba(0,0,0,0.03)]"
+  const hoverCardShadow =
+    "hover:shadow-[0_4px_6px_rgba(0,0,0,0.07),0_8px_16px_rgba(0,0,0,0.06),0_16px_32px_rgba(0,0,0,0.04)]"
+
+  // Definir un radio de borde consistente para toda la aplicación
+  const borderRadiusXL = "rounded-xl"
+  const borderRadiusTopXL = "rounded-t-xl"
+  const borderRadiusBottomXL = "rounded-b-xl"
+
   if (viewMode === "gallery") {
     return (
       <BookDetailDialogEnhanced book={book} type={type}>
-        <div className="cursor-pointer hover:shadow-md transition-all duration-200">
+        <div
+          className={`cursor-pointer transition-all duration-300 ${baseCardShadow} ${hoverCardShadow} hover:-translate-y-1 ${borderRadiusXL} overflow-hidden`}
+        >
           <div className="flex flex-col">
             {/* Book cover container - con bordes redondeados en la parte superior */}
-            <div className="relative overflow-hidden bg-gray-100 rounded-t-lg">
+            <div className="relative overflow-hidden bg-gray-100">
               {/* Sync status indicator - Eliminado el indicador de favorito */}
               {book.pending_sync && (
                 <div className="absolute bottom-2 right-2 z-10 bg-white rounded-full p-1 shadow-sm text-amber-500">
@@ -75,9 +87,9 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               </div>
             </div>
 
-            {/* Book details con bordes redondeados en la parte inferior */}
+            {/* Book details con bordes redondeados consistentes */}
             <div
-              className={`p-3 pb-4 ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} rounded-b-lg h-[5.5rem] shadow-sm`}
+              className={`p-3 pb-4 ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} h-[5.5rem] border-t border-gray-50`}
             >
               <TooltipProvider>
                 <Tooltip>
@@ -107,11 +119,12 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
     )
   }
 
-  // Original list view
+  // Original list view with enhanced shadows and consistent border radius
   return (
     <BookDetailDialogEnhanced book={book} type={type}>
       <div
-        className={`rounded-xl ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} p-4 shadow-sm cursor-pointer hover:shadow-md transition-all duration-200`}
+        className={`${borderRadiusXL} ${type === "read" ? "bg-white" : "bg-[#F5F5F5]"} p-4 cursor-pointer 
+        ${baseCardShadow} ${hoverCardShadow} hover:-translate-y-1 transition-all duration-300 overflow-hidden`}
       >
         <div className="flex items-start gap-3">
           {/* Portada del libro si está disponible */}
@@ -120,10 +133,10 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               <img
                 src={book.thumbnail || "/placeholder.svg"}
                 alt={book.title}
-                className="h-20 w-14 object-cover object-top rounded-sm shadow-sm"
+                className="h-20 w-14 object-cover object-top rounded-md shadow-[0_2px_4px_rgba(0,0,0,0.1)]"
                 onError={(e) => {
                   e.currentTarget.src = "/abstract-book-cover.png"
-                  e.currentTarget.className = "h-20 w-14 rounded-sm shadow-sm object-contain bg-gray-100"
+                  e.currentTarget.className = "h-20 w-14 rounded-md shadow-sm object-contain bg-gray-100"
                 }}
                 loading="lazy"
               />
@@ -154,7 +167,6 @@ export function BookCard({ book, type, showActions = false, viewMode = "list" }:
               </div>
 
               <div className="flex flex-col items-end">
-                {/* Eliminado el corazón para rating 5 */}
                 {book.pending_sync && (
                   <div className="text-amber-500 mt-1">
                     <CloudOff className="h-4 w-4" />
