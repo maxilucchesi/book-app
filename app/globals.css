@@ -62,11 +62,3 @@
 .animate-fade-in {
   animation: fade-in 0.3s ease-out forwards;
 }
-
-/* Clase para la textura de rice paper */
-.bg-texture {
-  background-color: #fdfcfb;
-  background-image: url("/textures/rice-paper-2.png");
-  background-repeat: repeat;
-  background-position: center;
-}
