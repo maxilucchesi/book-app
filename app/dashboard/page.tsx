@@ -114,7 +114,7 @@ export default function DashboardPage() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-      <div className="min-h-screen bg-[#FDFCFB] p-6">
+      <div className="min-h-screen bg-texture p-6">
         <div className="mx-auto max-w-md">
           <header className="mb-8">
             <div className="flex items-center justify-between">
