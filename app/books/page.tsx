@@ -7,8 +7,8 @@ import { ArrowLeft, PlusCircle } from "lucide-react"
 import { getBooks } from "@/lib/books"
 import { BookFilter } from "@/components/book-filter"
 import { useState, useEffect } from "react"
-import { ViewModeToggle } from "@/components/view-mode-toggle"
 import { toast } from "@/components/ui/use-toast"
+import { UserNav } from "@/components/user-nav"
 
 export default function BooksPage({
   searchParams,
@@ -20,7 +20,7 @@ export default function BooksPage({
 
   const [books, setBooks] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [viewMode, setViewMode] = useState<"list" | "gallery">("list")
+  const [viewMode, setViewMode] = useState<"list" | "gallery">("gallery")
 
   // Load books
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function BooksPage({
             </Link>
             <h1 className="font-serif text-2xl font-normal text-[#222222]">Your Books</h1>
           </div>
-          <ViewModeToggle viewMode={viewMode} onChange={handleViewModeChange} />
+          <UserNav viewMode={viewMode} onViewModeChange={handleViewModeChange} />
         </header>
 
         <BookFilter currentFilter={filter} />

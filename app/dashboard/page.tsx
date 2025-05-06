@@ -22,7 +22,7 @@ export default function DashboardPage() {
   const [randomPhrase, setRandomPhrase] = useState("")
   const [isButtonHovered, setIsButtonHovered] = useState(false)
   const isMobile = useIsMobile()
-  const [viewMode, setViewMode] = useState<"list" | "gallery">("list")
+  const [viewMode, setViewMode] = useState<"list" | "gallery">("gallery")
 
   // Add the date check for International Book Day near the top of the component
   // Add this after the useState declarations

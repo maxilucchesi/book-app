@@ -61,12 +61,9 @@ export function UserNav({ viewMode, onViewModeChange }: UserNavProps) {
           <DropdownMenuSeparator />
           {viewMode && onViewModeChange && (
             <>
-              <DropdownMenuItem className="cursor-default focus:bg-transparent">
-                <div className="flex w-full items-center justify-between">
-                  <span>Modo de vista</span>
-                  <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
-                </div>
-              </DropdownMenuItem>
+              <div className="px-2 py-1.5">
+                <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} showLabels={true} />
+              </div>
               <DropdownMenuSeparator />
             </>
           )}
