@@ -11,7 +11,7 @@ import { toast } from "@/components/ui/use-toast"
 export default function FavoritesPage() {
   const [favoriteBooks, setFavoriteBooks] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [viewMode, setViewMode] = useState<"list" | "gallery">("gallery")
+  const [viewMode, setViewMode] = useState<"list" | "gallery">("list")
 
   // Load favorite books
   useEffect(() => {
@@ -32,32 +32,12 @@ export default function FavoritesPage() {
       }
     }
 
-    // Load saved view mode preference
-    if (typeof window !== "undefined") {
-      const savedViewMode = localStorage.getItem("giuli-view-mode")
-      if (savedViewMode === "list" || savedViewMode === "gallery") {
-        setViewMode(savedViewMode)
-      }
-    }
-
     loadFavorites()
   }, [])
 
-  // Handle view mode changes
+  // Esta función ya no es necesaria, pero la mantenemos para no romper la interfaz con UserNav
   const handleViewModeChange = (mode: "list" | "gallery") => {
-    setViewMode(mode)
-    if (typeof window !== "undefined") {
-      localStorage.setItem("giuli-view-mode", mode)
-    }
-  }
-
-  // Función para asegurar que los libros se muestren en filas completas
-  const getBalancedBooks = (books: any[]) => {
-    // Si hay un número impar de libros, añadir un elemento vacío para completar la fila
-    if (books.length % 2 !== 0) {
-      return [...books, { isEmpty: true }]
-    }
-    return books
+    // No hacemos nada, siempre mantenemos la vista de lista
   }
 
   return (
@@ -74,35 +54,20 @@ export default function FavoritesPage() {
         </header>
 
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="rounded-xl bg-white shadow-sm animate-pulse">
-                <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
-                <div className="p-3">
-                  <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
-                </div>
+              <div key={i} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
+                <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
               </div>
             ))}
           </div>
         ) : favoriteBooks.length > 0 ? (
-          viewMode === "gallery" ? (
-            <div className="grid grid-cols-2 gap-4">
-              {getBalancedBooks(favoriteBooks).map((book, index) =>
-                book.isEmpty ? (
-                  <div key={`empty-${index}`} className="invisible"></div>
-                ) : (
-                  <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="gallery" />
-                ),
-              )}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {favoriteBooks.map((book) => (
-                <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="list" />
-              ))}
-            </div>
-          )
+          <div className="space-y-4">
+            {favoriteBooks.map((book) => (
+              <BookCard key={book.id || book.local_id || Date.now()} book={book} type="read" viewMode="list" />
+            ))}
+          </div>
         ) : (
           <div className="rounded-xl bg-white p-8 text-center shadow-sm">
             <p className="text-[#888888]">Aún no tienes libros favoritos</p>

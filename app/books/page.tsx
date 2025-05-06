@@ -20,7 +20,7 @@ export default function BooksPage({
 
   const [books, setBooks] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [viewMode, setViewMode] = useState<"list" | "gallery">("gallery")
+  const [viewMode, setViewMode] = useState<"list" | "gallery">("list")
 
   // Load books
   useEffect(() => {
@@ -42,23 +42,12 @@ export default function BooksPage({
       }
     }
 
-    // Load saved view mode preference
-    if (typeof window !== "undefined") {
-      const savedViewMode = localStorage.getItem("giuli-view-mode")
-      if (savedViewMode === "list" || savedViewMode === "gallery") {
-        setViewMode(savedViewMode)
-      }
-    }
-
     loadBooks()
-  }, [filter]) // Añadido filter como dependencia para recargar cuando cambie
+  }, [filter]) // Eliminada la carga de preferencia de vista
 
-  // Handle view mode changes
+  // Esta función ya no es necesaria, pero la mantenemos para no romper la interfaz con UserNav
   const handleViewModeChange = (mode: "list" | "gallery") => {
-    setViewMode(mode)
-    if (typeof window !== "undefined") {
-      localStorage.setItem("giuli-view-mode", mode)
-    }
+    // No hacemos nada, siempre mantenemos la vista de lista
   }
 
   // Función para asegurar que los libros se muestren en filas completas
@@ -85,60 +74,28 @@ export default function BooksPage({
 
         <BookFilter currentFilter={filter} />
 
-        <div className={viewMode === "gallery" ? "grid grid-cols-2 gap-4 mt-6 w-full" : "space-y-4 mt-6 w-full"}>
+        <div className="space-y-4 mt-6 w-full">
           {isLoading ? (
-            viewMode === "gallery" ? (
-              <div className="grid grid-cols-2 gap-3 w-full">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="rounded-xl bg-white shadow-sm animate-pulse">
-                    <div className="aspect-[2/3] bg-gray-200 rounded-t-lg"></div>
-                    <div className="p-3">
-                      <div className="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
-                    <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
-                  </div>
-                ))}
-              </div>
-            )
+            <div className="space-y-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="rounded-xl bg-white p-4 shadow-sm animate-pulse">
+                  <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
           ) : books.length > 0 ? (
-            viewMode === "gallery" ? (
-              <div className="grid grid-cols-2 gap-3 w-full">
-                {getBalancedBooks(books).map((book, index) =>
-                  book.isEmpty ? (
-                    <div key={`empty-${index}`} className="invisible"></div>
-                  ) : (
-                    <BookCard
-                      key={book.id || book.local_id || Date.now()}
-                      book={book}
-                      type={book.type as "read" | "wishlist"}
-                      showActions={false}
-                      viewMode={viewMode}
-                    />
-                  ),
-                )}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {books.map((book) => (
-                  <BookCard
-                    key={book.id || book.local_id || Date.now()}
-                    book={book}
-                    type={book.type as "read" | "wishlist"}
-                    showActions
-                    viewMode={viewMode}
-                  />
-                ))}
-              </div>
-            )
+            <div className="space-y-4">
+              {books.map((book) => (
+                <BookCard
+                  key={book.id || book.local_id || Date.now()}
+                  book={book}
+                  type={book.type as "read" | "wishlist"}
+                  showActions
+                  viewMode="list"
+                />
+              ))}
+            </div>
           ) : (
             <div className="rounded-xl bg-white p-8 text-center shadow-sm">
               <p className="text-[#888888]">No se encontraron libros en esta categoría</p>
