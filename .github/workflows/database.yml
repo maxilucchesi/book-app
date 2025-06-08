@@ -1,0 +1,15 @@
+name: Keep Supabase Database Alive
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Ejecutar cada 4 horas
+  workflow_dispatch:  # Permite ejecutar manualmente
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping application to keep database alive
+        run: |
+          curl -f ${{ secrets.APP_URL }}/api/ping-db || echo "Failed to ping, but continuing..."
+          echo "Ping completed at $(date)"
